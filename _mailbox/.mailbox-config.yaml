@@ -1,0 +1,156 @@
+# ═══════════════════════════════════════════════════════════════
+# BMAD Multi-Project - Configuration Mailbox
+# ═══════════════════════════════════════════════════════════════
+# Ce fichier configure le comportement de la mailbox pour ce projet
+# Placé dans: _mailbox/.mailbox-config.yaml
+# ═══════════════════════════════════════════════════════════════
+
+version: 1
+
+# ═══════════════════════════════════════════════════════════════
+# SUBSCRIPTIONS - Ce qui intéresse ce projet
+# ═══════════════════════════════════════════════════════════════
+subscriptions:
+  # Tags qui nous intéressent (reçus même si broadcast général)
+  interested_in: []
+    # - authentication
+    # - security
+    # - api-contracts
+
+  # Tags à ignorer (même si broadcast "*")
+  ignore: []
+    # - frontend-only
+    # - documentation
+
+# ═══════════════════════════════════════════════════════════════
+# DEPENDENCIES - Relations avec autres projets
+# ═══════════════════════════════════════════════════════════════
+dependencies:
+  # Projets dont on dépend (consomme leurs services/APIs)
+  depends_on: []
+    # - project-a
+    # - project-b
+
+  # Capacités que ce projet fournit aux autres
+  provides: []
+    # - user-authentication
+    # - public-api
+
+# ═══════════════════════════════════════════════════════════════
+# TRIAGE - Traitement automatique vs attention requise
+# ═══════════════════════════════════════════════════════════════
+triage:
+  # Transmissions traitées automatiquement (pas de brainstorm)
+  auto_handle:
+    - type: info
+      action: archive
+    - type: ack
+      action: update_tracking_archive
+    - type: dependency
+      action: add_to_backlog
+    - type: bug
+      action: workflow_create_story
+    - type: hierarchy-update
+      action: update_local_hierarchy
+    - type: project-update
+      action: update_local_hierarchy
+    - type: escalation
+      action: notify_and_prioritize
+    - type: status-report
+      action: update_ecosystem_dashboard
+
+  # Transmissions nécessitant attention humaine
+  require_attention:
+    - type: architectural
+      action: propose_review
+    - type: feature-request
+      conditions:
+        any_of:
+          - priority: [critical, high]
+          - impacts_multiple_projects: true
+          - keywords: [nouveau projet, nouvelle architecture, refonte]
+      action: propose_brainstorm
+
+# ═══════════════════════════════════════════════════════════════
+# TRIGGERS - Actions automatiques selon le type de transmission
+# ═══════════════════════════════════════════════════════════════
+triggers: []
+  # - match:
+  #     from: master
+  #     type: architectural
+  #   action:
+  #     workflow: correct-course
+  #     auto_start: false
+
+# ═══════════════════════════════════════════════════════════════
+# ESCALATION - Gestion des transmissions non traitées
+# ═══════════════════════════════════════════════════════════════
+escalation:
+  # Timeout par défaut: 7 jours
+  - after_days: 7
+    status: pending
+    action:
+      notify: master
+      add_tag: stale
+
+  # Critique non traité après 24h
+  - after_hours: 24
+    priority: critical
+    action:
+      escalate_to: master
+      create_transmission:
+        type: escalation
+        message: "Transmission critique non traitée"
+
+# ═══════════════════════════════════════════════════════════════
+# DELEGATION - Routage automatique vers enfants (si applicable)
+# ═══════════════════════════════════════════════════════════════
+delegation: []
+  # - match:
+  #     tags: [component-specific]
+  #   delegate_to: children
+  #   keep_copy: true
+
+# ═══════════════════════════════════════════════════════════════
+# TRANSFORMATIONS - Adapter au contexte local
+# ═══════════════════════════════════════════════════════════════
+transformations:
+  # Mapper la terminologie externe vers locale
+  terminology: {}
+    # "external-term": "local-term"
+
+# ═══════════════════════════════════════════════════════════════
+# FILTERS - Acceptation/rejet automatique
+# ═══════════════════════════════════════════════════════════════
+filters:
+  auto_accept:
+    - from: master
+      type: architectural
+    - from: master
+      type: hierarchy-update
+    - from: master
+      type: project-update
+
+  auto_reject:
+    - tags: [spam, test-only]
+
+# ═══════════════════════════════════════════════════════════════
+# DEPRECATED - Gestion des projets dépréciés
+# ═══════════════════════════════════════════════════════════════
+# Ces règles s'appliquent lors du dispatch par l'orchestrateur
+deprecated_handling:
+  # Ne JAMAIS envoyer de transmissions vers un projet deprecated
+  skip_deprecated_destinations: true
+
+  # Si ce projet est deprecated, rejeter toutes les transmissions entrantes
+  # sauf hierarchy-update et project-update (pour màj du status)
+  if_this_project_deprecated:
+    reject_all_except: [hierarchy-update, project-update]
+    auto_response: "Projet déprécié - voir deprecated.md"
+
+# ═══════════════════════════════════════════════════════════════
+# ARCHIVE - Rétention et compression
+# ═══════════════════════════════════════════════════════════════
+archive:
+  retention_days: 365
+  compress_after_days: 30

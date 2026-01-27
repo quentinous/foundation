@@ -1,0 +1,22 @@
+# BMAD Multi-Project Hierarchy
+# Ce fichier définit la structure hiérarchique des projets
+# Le master est l'unique source de vérité - les enfants reçoivent des copies
+#
+# Champs:
+#   project_id  - Identifiant unique du projet
+#   parent_id   - ID du parent (vide = master)
+#   path        - Chemin relatif (./ = projet courant)
+#   tags        - Tags pour routage (séparés par ;)
+#   status      - active | r&d | test | production | deprecated | archived
+#   branch      - Branche git de travail (vide si deprecated)
+#
+# Statuts:
+#   active      - Projet actif en développement
+#   r&d         - Recherche et développement (expérimental)
+#   test        - En phase de test
+#   production  - Déployé en production
+#   deprecated  - Déprécié (voir deprecated.md dans le projet)
+#   archived    - Archivé (plus aucune activité)
+#
+project_id,parent_id,path,tags,status,branch
+tuttle-master,,,master;orchestrator,active,master

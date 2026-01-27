@@ -1,0 +1,130 @@
+# BMM Workflow Status - tuttle-master
+# Generated: 2026-01-27
+# Track: Enterprise BMad Method (Greenfield)
+
+generated: "2026-01-27"
+project: "tuttle-master"
+project_type: "platform"
+selected_track: "enterprise"
+field_type: "greenfield"
+workflow_path: "enterprise-greenfield"
+
+# Imported R&D artifacts from source project
+imported_artifacts:
+  analysis:
+    - "analysis/5_whys_analysis.md"
+    - "analysis/brainstorming-session-2026-01-20.md"
+    - "analysis/brainstorming-session-2026-01-23.md"
+    - "analysis/chaos_monkey.md"
+    - "analysis/genre_mashup.md"
+    - "analysis/pre_mortem_analysis.md"
+    - "analysis/scamper_innovations.md"
+    - "analysis/support_theater.md"
+  decisions:
+    - "decisions/architecture_debate.md"
+    - "decisions/change_plan.md"
+    - "decisions/code_review_gauntlet.md"
+    - "decisions/critical_challenge.md"
+    - "decisions/performance_panel.md"
+    - "decisions/stakeholder_round_table.md"
+  research:
+    - "research/market-public-adoption-cypherpunk-research-2026-01-22.md"
+
+workflow_status:
+  # ═══════════════════════════════════════════════════════════════
+  # PHASE 1 - Analysis (Optional Discovery)
+  # ═══════════════════════════════════════════════════════════════
+  phase_1_analysis:
+    brainstorm:
+      status: "imported"
+      files:
+        - "analysis/brainstorming-session-2026-01-20.md"
+        - "analysis/brainstorming-session-2026-01-23.md"
+        - "analysis/5_whys_analysis.md"
+        - "analysis/chaos_monkey.md"
+        - "analysis/genre_mashup.md"
+        - "analysis/pre_mortem_analysis.md"
+        - "analysis/scamper_innovations.md"
+        - "analysis/support_theater.md"
+      agent: "analyst"
+      command: "/bmad:core:workflows:brainstorming"
+      note: "8 sessions imported - can add more if needed"
+
+    research:
+      status: "imported"
+      files:
+        - "research/market-public-adoption-cypherpunk-research-2026-01-22.md"
+      agent: "analyst"
+      command: "/bmad:bmm:workflows:research"
+      note: "1 study imported - can add more if needed"
+
+    product_brief:
+      status: "in_progress"
+      file: "product-brief-tuttle-master-2026-01-27.md"
+      current_step: 2
+      next_step: 3
+      agent: "analyst"
+      command: "/bmad:bmm:workflows:create-product-brief"
+      note: "Step 2 (Vision) completed - resume at Step 3 (Target Users)"
+
+  # ═══════════════════════════════════════════════════════════════
+  # PHASE 2 - Planning
+  # ═══════════════════════════════════════════════════════════════
+  phase_2_planning:
+    prd:
+      status: "required"
+      agent: "pm"
+      command: "/bmad:bmm:workflows:prd"
+      output: "Product Requirements Document with FRs and NFRs"
+
+    ux_design:
+      status: "conditional"
+      condition: "if_has_ui"
+      agent: "ux-designer"
+      command: "/bmad:bmm:workflows:create-ux-design"
+      note: "Determined after PRD"
+
+  # ═══════════════════════════════════════════════════════════════
+  # PHASE 3 - Solutioning
+  # ═══════════════════════════════════════════════════════════════
+  phase_3_solutioning:
+    architecture:
+      status: "required"
+      agent: "architect"
+      command: "/bmad:bmm:workflows:create-architecture"
+      output: "System architecture document"
+
+    epics_and_stories:
+      status: "required"
+      agent: "pm"
+      command: "/bmad:bmm:workflows:create-epics-and-stories"
+      note: "Break down PRD into implementable epics with full context"
+
+    test_design:
+      status: "optional"
+      agent: "tea"
+      command: "/bmad:bmm:workflows:testarch-test-design"
+      output: "System-level testability review"
+
+    implementation_readiness:
+      status: "required"
+      agent: "architect"
+      command: "/bmad:bmm:workflows:check-implementation-readiness"
+      note: "Gate check - validates PRD + Architecture + Epics + UX"
+
+  # ═══════════════════════════════════════════════════════════════
+  # PHASE 4 - Implementation
+  # ═══════════════════════════════════════════════════════════════
+  phase_4_implementation:
+    sprint_planning:
+      status: "required"
+      agent: "sm"
+      command: "/bmad:bmm:workflows:sprint-planning"
+      note: "Creates sprint plan - subsequent work tracked in sprint-status.yaml"
+
+# Next action
+next:
+  workflow: "product-brief"
+  agent: "analyst"
+  command: "/bmad:bmm:workflows:create-product-brief"
+  reason: "Synthesize imported R&D into cohesive product vision"
