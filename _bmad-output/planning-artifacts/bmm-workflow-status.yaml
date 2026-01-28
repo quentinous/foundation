@@ -59,13 +59,18 @@ workflow_status:
       note: "1 study imported - can add more if needed"
 
     product_brief:
-      status: "in_progress"
+      status: "completed"
       file: "product-brief-tuttle-master-2026-01-27.md"
-      current_step: 2
-      next_step: 3
+      completed_at: "2026-01-28"
       agent: "analyst"
       command: "/bmad:bmm:workflows:create-product-brief"
-      note: "Step 2 (Vision) completed - resume at Step 3 (Target Users)"
+      note: "All 6 steps completed with Advanced Elicitation (Pre-mortem, ADRs, First Principles, Comparative Matrix, Red Team)"
+      enrichments:
+        - "Pre-mortem Analysis: +10 success criteria, resilience patterns"
+        - "ADRs: 8 architectural decisions documented"
+        - "First Principles: Infra stack, GitOps, envs clarified"
+        - "Comparative Matrix: Scoring + Sprint roadmap"
+        - "Red Team: Provisioner resilience, payments, runbooks"
 
   # ═══════════════════════════════════════════════════════════════
   # PHASE 2 - Planning
@@ -124,7 +129,16 @@ workflow_status:
 
 # Next action
 next:
-  workflow: "product-brief"
-  agent: "analyst"
-  command: "/bmad:bmm:workflows:create-product-brief"
-  reason: "Synthesize imported R&D into cohesive product vision"
+  workflow: "prd"
+  agent: "pm"
+  command: "/bmad:bmm:workflows:prd"
+  reason: "Create detailed Product Requirements Document based on completed Product Brief"
+  alternatives:
+    - workflow: "create-ux-design"
+      agent: "ux-designer"
+      command: "/bmad:bmm:workflows:create-ux-design"
+      reason: "UX research and design (can run parallel with PRD)"
+    - workflow: "init-multi-project"
+      agent: "orchestrator"
+      command: "/bmad:multiproject:workflows:init-multi-project"
+      reason: "Initialize git submodule structure for 9 projects"
