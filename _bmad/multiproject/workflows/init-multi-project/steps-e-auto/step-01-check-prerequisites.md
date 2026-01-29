@@ -33,7 +33,7 @@ Verify that the master project has a completed architecture document before proc
 ### 1. Search for Architecture Document
 
 ```
-SEARCH in order:
+SEARCH in order from {architecturePaths}:
 1. {project-root}/_bmad-output/planning-artifacts/architecture.md
 2. {project-root}/docs/architecture.md
 
@@ -111,6 +111,11 @@ Display:
 - IF M: Return to {manualModeReturn}
 - IF R: Return to {mainMenuReturn}
 - IF Any other: help user, then redisplay menu
+
+#### EXECUTION RULES:
+- ALWAYS halt and wait for user input after presenting menu
+- ONLY proceed to next step when user selects 'C'
+- After other menu items execution, return to this menu
 
 ### 3. No Architecture Found
 

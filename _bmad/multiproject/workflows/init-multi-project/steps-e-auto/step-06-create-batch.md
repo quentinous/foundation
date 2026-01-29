@@ -4,8 +4,8 @@ description: 'Create all selected projects in correct order (parents first)'
 
 # File References
 nextStepFile: './step-07-transmit-confirm.md'
-mailboxConfigTemplate: '{project-root}/_bmad-output/bmb-creations/bmad-multi-project/templates/mailbox-config.yaml'
-hierarchyCsvTemplate: '{project-root}/_bmad-output/bmb-creations/bmad-multi-project/templates/hierarchy.csv'
+mailboxConfigTemplate: '{project-root}/_bmad/multiproject/templates/mailbox-config.yaml'
+hierarchyCsvTemplate: '{project-root}/_bmad/multiproject/templates/hierarchy.csv'
 
 # Context from previous step
 # selected_nodes: passed from step-05
@@ -55,7 +55,7 @@ Create all selected projects in the correct order (parents first), updating hier
 creation_order = selected_nodes.sort((a, b) => a.depth - b.depth)
 
 // Load master hierarchy.csv
-master_hierarchy = LOAD "{project-root}/hierarchy.csv"
+master_hierarchy = LOAD "{hierarchyCsvTemplate}" or "{project-root}/hierarchy.csv" if template is source
 master_project_id = first line with empty parent_id
 
 creation_log = []
@@ -104,37 +104,37 @@ FOR each node in creation_order:
 ```
 FUNCTION create_bmad_project(node):
     path = "{project-root}/{node.path}"
-
-    // Create FULL BMAD structure for EVERY project
+    
+    // 1. Create project root
     MKDIR path
-    MKDIR path/_bmad
-    MKDIR path/_bmad-output
+    
+    // 2. Install BMAD using CLI
+    // Note: User can specify version, defaults to @alpha
+    installer_version = "alpha" // or prompt user if needed
+    
+    Display: "Running installer for {node.name}..."
+    RUN "npx bmad-method@{installer_version} install" inside {path}
+    
+    // 3. Post-Install Configuration Update
+    // The installer creates _bmad/config.yaml, we need to enrich it
+    config_path = "{path}/_bmad/config.yaml"
+    
+    UPDATE config_path:
+        SET project_focus = "{node.suggested_focus}"
+        SET parent_project = "{node.parent.name if exists else 'master'}"
+        // communication_language and user_name are set by installer prompts or defaults
+
+    // 4. Multi-Project Overlay (Mailbox)
+    // Create _mailbox structure which is specific to multi-project
     MKDIR path/_mailbox
     MKDIR path/_mailbox/inbox
     MKDIR path/_mailbox/outbox
     MKDIR path/_mailbox/sent
     MKDIR path/_mailbox/archive
 
-    // Create _bmad/config.yaml
-    WRITE path/_bmad/config.yaml:
-        ```yaml
-        # BMAD Configuration for {node.name}
-        # This is a full BMAD project, not a container
-
-        project_name: "{node.name}"
-        communication_language: "{inherited_from_master}"
-
-        # Project focus (suggested based on hierarchy position)
-        project_focus: "{node.suggested_focus}"
-
-        # Parent relationship
-        parent_project: "{node.parent.name if exists else 'master'}"
-        ```
-
-    // Copy mailbox config
     COPY {mailboxConfigTemplate} TO path/_mailbox/.mailbox-config.yaml
 
-    // Initialize as git repo (will become submodule)
+    // 5. Git Initialization
     IF git_submodule_mode:
         git init path
         // User will need to: git submodule add <remote> <path>
@@ -256,6 +256,11 @@ IF errors.length > 0:
 ELSE:
     Display: "Passage à l'envoi des transmissions..."
 ```
+
+#### EXECUTION RULES:
+- ALWAYS halt and wait for user input after presenting menu (if errors occur)
+- ONLY proceed to next step when user selects 'C' or no errors
+- After other menu items execution, return to this menu
 
 Then: Load, read entirely, then execute {nextStepFile}
 

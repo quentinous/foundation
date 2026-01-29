@@ -5,7 +5,7 @@
 Les templates BMAD Multi-Project sont situés dans :
 
 ```
-{project-root}/_bmad-output/bmb-creations/bmad-multi-project/templates/
+{project-root}/_bmad/multiproject/templates//
 ```
 
 ## Fichiers disponibles
@@ -44,5 +44,5 @@ Copier et adapter `deprecated.md` à la racine du projet déprécié.
 ## Variables à résoudre
 
 - `{project-root}` : Racine du projet master
-- `{templates}` : `{project-root}/_bmad-output/bmb-creations/bmad-multi-project/templates`
-- `{communication_language}` : Depuis `_bmad/bmb/config.yaml`
+- `{templates}` : `{project-root}/_bmad/multiproject/templates/`
+- `{communication_language}` : Depuis `_bmad/bmm/config.yaml`

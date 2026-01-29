@@ -69,7 +69,7 @@ SI chemin_cible n'est pas dans {project-root}:
 
 ### 1. Load Configuration
 
-Charger `{project-root}/_bmad/bmb/config.yaml` et résoudre :
+Charger `{project-root}/_bmad/bmm/config.yaml` et résoudre :
 - `user_name`, `communication_language`, `output_folder`
 
 ### 2. Detect Context
@@ -426,7 +426,7 @@ Légende :
 
 Les templates sont dans :
 ```
-_bmad-output/bmb-creations/bmad-multi-project/templates/
+{project-root}/_bmad/multiproject/templates/
 ├── hierarchy.csv
 ├── transmission.md
 ├── mailbox-config.yaml

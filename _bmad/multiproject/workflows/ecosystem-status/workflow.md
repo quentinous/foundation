@@ -338,7 +338,7 @@ Ajouter au menu des agents (si projet master):
 
 ```xml
 <item cmd="ES or fuzzy match on ecosystem-status"
-      exec="{project-root}/_bmad-output/bmb-creations/bmad-multi-project/workflows/ecosystem-status/workflow.md"
+      exec="{project-root}/_bmad/multiproject/workflows/ecosystem-status/workflow.md"
       condition="is_master_project">
   [ES] 📊 Ecosystem Status Dashboard
 </item>

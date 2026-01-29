@@ -35,7 +35,7 @@ Extract all components, services, and structural elements from the architecture 
 ```
 LOAD {architecturePath} completely
 
-EXTRACT from document:
+EXTRACT from document using categories from {categoriesData}:
   - Project Structure section
   - Component/Service Boundaries
   - Technology decisions
@@ -46,7 +46,7 @@ EXTRACT from document:
 ### 2. Load PRD (Optional Enhancement)
 
 ```
-SEARCH for PRD:
+SEARCH for PRD in {prdPaths}:
   1. {project-root}/_bmad-output/planning-artifacts/prd.md
   2. {project-root}/docs/prd.md
 
@@ -143,6 +143,11 @@ Display:
 - IF R: Show numbered list, prompt for number to remove, redisplay
 - IF X: Return to main menu
 - IF Any other: help user, then redisplay menu
+
+#### EXECUTION RULES:
+- ALWAYS halt and wait for user input after presenting menu
+- ONLY proceed to next step when user selects 'C'
+- After other menu items execution, return to this menu
 
 ---
 

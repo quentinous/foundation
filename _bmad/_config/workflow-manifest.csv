@@ -35,3 +35,5 @@ name,description,module,path
 "workflow-status","Lightweight status checker - answers """"what should I do now?"""" for any agent. Reads YAML status file for workflow tracking. Use workflow-init for new projects.","bmm","_bmad/bmm/workflows/workflow-status/workflow.yaml"
 "init-multi-project","Initialize or manage BMAD Multi-Project ecosystem with isolation rules","multiproject","_bmad/multiproject/workflows/init-multi-project/workflow.md"
 "ecosystem-status","Master-only READ-ONLY dashboard for multi-project ecosystem status","multiproject","_bmad/multiproject/workflows/ecosystem-status/workflow.md"
+"transmit","Create and dispatch inter-project transmission","multiproject","_bmad/multiproject/workflows/transmit/workflow.md"
+"check-inbox","Read and manage incoming transmissions","multiproject","_bmad/multiproject/workflows/check-inbox/workflow.md"

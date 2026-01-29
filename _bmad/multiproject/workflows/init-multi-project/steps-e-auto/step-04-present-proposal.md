@@ -176,6 +176,11 @@ Return to {mainMenuReturn}
 #### IF Any other:
 Help user understand options, then redisplay menu.
 
+#### EXECUTION RULES:
+- ALWAYS halt and wait for user input after presenting menu
+- ONLY proceed to next step when user selects 'A' (Accept)
+- After other menu items execution, return to this menu
+
 ---
 
 ## CONTEXT OUTPUT

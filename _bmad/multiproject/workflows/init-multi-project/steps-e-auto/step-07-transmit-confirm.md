@@ -4,7 +4,7 @@ description: 'Send hierarchy-update transmission and confirm completion'
 
 # File References
 mainMenuReturn: '../workflow.md#3-display-menu'
-transmissionTemplate: '{project-root}/_bmad-output/bmb-creations/bmad-multi-project/templates/transmission.md'
+transmissionTemplate: '{project-root}/_bmad/multiproject/templates/transmission.md'
 
 # Context from previous step
 # creation_log: passed from step-06
@@ -40,7 +40,7 @@ filename = "TX_{master_project_id}_{date}_{time}_{suffix}.md"
 
 ### 2. Create Transmission Document
 
-Create in `{project-root}/_mailbox/outbox/{filename}`:
+Create in `{project-root}/_mailbox/outbox/{filename}` using template {transmissionTemplate}:
 
 ```markdown
 ---
@@ -163,6 +163,10 @@ IF dispatched_to.length > 0:
 ║      • /create-product-brief  → Définir le produit           ║
 ║      • /workflow-init         → Commencer le workflow BMAD   ║
 ║                                                              ║
+║   3. Gérer les communications:                               ║
+║      • /transmit              → Envoyer un message           ║
+║      • /check-inbox           → Consulter les messages reçus ║
+║                                                              ║
 ║   💡 Les projets intermédiaires (ex: app/, app/mobile/)      ║
 ║      peuvent définir la stratégie globale qui sera héritée   ║
 ║      par leurs enfants. C'est l'avantage de l'entonnoir!     ║
@@ -182,6 +186,10 @@ Display:
 IF M: Return to {mainMenuReturn}
 IF Q: End workflow
 ```
+
+#### EXECUTION RULES:
+- ALWAYS halt and wait for user input after presenting menu
+- After other menu items execution, return to this menu
 
 ---
 
