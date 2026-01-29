@@ -19,18 +19,29 @@ inputDocuments:
   - source/product-brief-tuttle-network.md
   - source/project-context.md
   - source/architecture-decision-record.md
-date: 2026-01-28
+date: 2026-01-29
 author: Quentin
 status: completed
 current_step: 6
 next_step: null
 completed_at: 2026-01-28
+last_updated: 2026-01-29
 enrichments_applied:
   - Pre-mortem Analysis
   - Architecture Decision Records
   - First Principles Analysis
   - Comparative Analysis Matrix
   - Red Team vs Blue Team
+  - Clean Pipe Architecture (Blocky DNS)
+  - Legal Structure Roadmap (Informal → Sàrl Suisse)
+  - Internationalization Strategy (6 languages)
+  - Distribution V1 Clarification (100% Digital, Referents V2+)
+  - SAV Infrastructure (Chatwoot + AI Captain)
+  - SEO/Accessibility/AI Search Strategy
+  - Competitor Playbook (5 scenarios + response matrix)
+  - Crisis Playbook (5 crisis types + operational procedures)
+  - Interview Protocol M3 (PMF validation guide)
+  - Beta Checklist D3 (Go/No-Go V1 criteria)
 ---
 
 # Product Brief: tuttle-master
@@ -914,6 +925,36 @@ Client peut avoir : VPN + Network ✅
 | **Recovery erreur humaine** | Critique | Procédure de récupération Seed documentée | V1.5 |
 | **Offre B2B distincte** | Validé | Support pro, SLA, facturation entreprise | V2.0 |
 
+#### Clarification : Distribution V1 = 100% Digitale
+
+**⚠️ IMPORTANT — Les Référents NE SONT PAS la stratégie V1**
+
+| Phase | Canal de Distribution | Notes |
+|-------|----------------------|-------|
+| **V1.0** | Web classique (e-commerce) | Pub digitale, SEO, réseaux sociaux, contenu |
+| **V1.5** | Idem + early adopters hardware | Communauté technique, bouche-à-oreille |
+| **V2.0** | + Système Référents/Îlots | Tuttle Network uniquement |
+
+**Ce que sont les Référents :**
+- **Prévision architecturale** pour V2+ (Tuttle Network)
+- Distribution physique locale pour le mesh LightWeb
+- Modèle inspiré de la vente à domicile
+- **Pas actifs en V1**
+
+**Stratégie Marketing V1 — Tendance Communautaire :**
+
+Bien que la distribution soit 100% digitale, Tuttle capitalise sur une **forte affinité communautaire** :
+
+| Canal | Approche | Cible |
+|-------|----------|-------|
+| **Telegram/Signal** | Groupes dissidents, privacy, souveraineté | Robert, Christophe |
+| **Forums privacy** | Contenu éducatif, participation authentique | Robert, Marc |
+| **Réseaux cathos** | Bouche-à-oreille naturel, valeurs alignées | Christophe, Marie-Bénédicte |
+| **YouTube/Podcasts** | Tutoriels, interviews, transparence | Jean-Marc, tous |
+| **SEO** | Contenu "Internet propre famille", "VPN vie privée" | Christophe, Jean-Marc |
+
+> Le marketing passe par le réseau communautaire, mais la **transaction reste 100% web** (tuttle-store).
+
 #### Stratégie de marque unifiée
 
 **UN produit : Tuttle**
@@ -1086,6 +1127,337 @@ Prévention : Features uniques non-copiables, vitesse exécution, approche Enikm
 
 ---
 
+### Crisis Playbook — Procédures Opérationnelles
+
+*Document opérationnel cross-projet : Procédures de réponse aux crises*
+
+#### Principes Fondamentaux
+
+```
+1. PRÉPARER > RÉAGIR
+   Une crise préparée n'est plus une crise, c'est une procédure.
+
+2. TRANSPARENCE > SILENCE
+   Le silence = culpabilité perçue. Communiquer même si incomplet.
+
+3. RAPIDITÉ > PERFECTION
+   Première réponse en < 2h, même partielle. Détails après.
+
+4. CENTRALISER > DISPERSER
+   Un seul porte-parole. Un seul canal officiel.
+```
+
+---
+
+#### Niveaux de Crise
+
+| Niveau | Définition | Exemples | Réponse |
+|--------|------------|----------|---------|
+| 🟢 **Incident** | Impact limité, gérable en routine | Bug mineur, plainte isolée | Équipe support standard |
+| 🟡 **Alerte** | Impact modéré, attention requise | Article critique, vague de plaintes | Founder informé, monitoring renforcé |
+| 🟠 **Crise** | Impact significatif, réputation en jeu | Faille sécurité, article hostile majeur | War room activée |
+| 🔴 **Urgence** | Survie menacée, action immédiate | Déplatforming, fuite de données | Toutes ressources mobilisées |
+
+---
+
+#### Crise Type A : Article Hostile / Hit Piece
+
+**Scénario :** Un média publie "Tuttle, le VPN qui séduit l'extrême droite"
+
+**Signaux d'alerte :**
+- Contact journaliste demandant "commentaire" avec délai court
+- Questions orientées sur le positionnement politique
+- Mention de "sources" ou "témoignages" anonymes
+
+**Procédure < 2h :**
+
+| Étape | Action | Responsable |
+|-------|--------|-------------|
+| **1** | Lire l'article COMPLET, noter les faits vs opinions | Founder |
+| **2** | Screenshot + archive (archive.org) pour preuve | Ops |
+| **3** | NE PAS répondre sur les réseaux sociaux | Tous |
+| **4** | Rédiger réponse factuelle (max 500 mots) | Founder |
+| **5** | Publier sur blog Tuttle | tuttle-store |
+| **6** | Partager via Telegram/Signal communauté | Community |
+
+**Template Réponse Blog :**
+
+```markdown
+# Notre réponse à [Nom du média]
+
+Le [date], [média] a publié un article intitulé "[titre]".
+
+## Les faits
+- [Fait 1 mentionné dans l'article] : [Notre réponse factuelle]
+- [Fait 2] : [Réponse]
+
+## Ce que nous sommes
+Tuttle est un service de protection numérique familiale. Notre mission : [...]
+
+## Ce que nous ne sommes pas
+Nous ne sommes affiliés à aucun mouvement politique. Nos utilisateurs
+viennent de tous horizons : [exemples].
+
+## Transparence
+- Notre code est open source : [lien GitHub]
+- Notre Threat Model est public : [lien]
+- Nos valeurs sont dans notre Manifeste : [lien]
+
+Nous restons disponibles pour tout journaliste souhaitant comprendre
+notre projet plutôt que le caricaturer.
+```
+
+**Procédure J+1 à J+7 :**
+
+| Jour | Action |
+|------|--------|
+| **J+1** | Droit de réponse si diffamation avérée |
+| **J+2** | Mobiliser témoignages clients diversifiés |
+| **J+3** | Contacter alliés médias pour articles équilibrés |
+| **J+7** | Bilan : impact réel sur acquisitions/churn |
+
+**Ce qu'on NE FAIT PAS :**
+- ❌ Attaquer le journaliste personnellement
+- ❌ Répondre sur Twitter dans l'émotion
+- ❌ Nier des faits vérifiables
+- ❌ Menacer de poursuites (sauf diffamation claire)
+
+---
+
+#### Crise Type B : Déplatforming (Stripe, Cloudflare, Hébergeur)
+
+**Scénario :** Stripe suspend le compte sans préavis
+
+**Signaux d'alerte :**
+- Email "review de compte" de Stripe
+- Demande de documents supplémentaires
+- Délai de réponse imposé < 48h
+
+**Procédure Immédiate (< 1h) :**
+
+| Étape | Action | Responsable |
+|-------|--------|-------------|
+| **1** | Activer BTCPay comme paiement principal | tuttle-store |
+| **2** | Bannière site : "Paiement temporairement en crypto uniquement" | tuttle-store |
+| **3** | Email clients : explication + instructions crypto | tuttle-store |
+| **4** | Message Telegram/Signal communauté | Community |
+| **5** | Contacter Stripe pour clarification | Founder |
+
+**Template Email Clients :**
+
+```
+Objet : Information importante sur les paiements Tuttle
+
+Bonjour,
+
+Suite à une décision de notre prestataire de paiement, nous activons
+temporairement notre système de paiement alternatif.
+
+VOTRE ABONNEMENT CONTINUE NORMALEMENT.
+
+Pour les renouvellements et nouveaux abonnements :
+- Bitcoin : [instructions]
+- Monero : [instructions]
+- Virement SEPA : [IBAN]
+
+Nous travaillons à rétablir les paiements par carte rapidement.
+
+Questions ? Répondez à cet email.
+
+L'équipe Tuttle
+```
+
+**Infrastructure de Résilience (Pré-configurée) :**
+
+| Service | Principal | Backup 1 | Backup 2 |
+|---------|-----------|----------|----------|
+| **Paiement carte** | Stripe | - | - |
+| **Paiement crypto** | BTCPay (self-hosted) | - | - |
+| **CDN** | Cloudflare | BunnyCDN | Direct IP |
+| **DNS** | Cloudflare | Njalla | Self-hosted |
+| **Hébergement** | Hetzner | OVH | Njalla |
+| **Email** | Proton | Self-hosted | - |
+| **Domaine** | Njalla | Namecheap | - |
+
+**Procédure J+1 à J+14 :**
+
+| Jour | Action |
+|------|--------|
+| **J+1** | Évaluer si Stripe récupérable (négociation) |
+| **J+3** | Si non récupérable : solution alternative (Mollie, Adyen) |
+| **J+7** | Communication : "Nouvelles options de paiement" |
+| **J+14** | Bilan : % clients perdus, leçons apprises |
+
+---
+
+#### Crise Type C : Faille de Sécurité / Fuite de Données
+
+**Scénario :** Vulnérabilité découverte (interne ou externe)
+
+**Signaux d'alerte :**
+- Rapport bug bounty
+- Activité anormale dans les logs
+- Publication externe (Twitter, forum)
+
+**Procédure Immédiate (< 30 min) :**
+
+| Étape | Action | Responsable |
+|-------|--------|-------------|
+| **1** | Évaluer la gravité (données exposées ?) | Security |
+| **2** | Si exploitation active : couper l'accès concerné | Infra |
+| **3** | Préserver les logs pour analyse | Infra |
+| **4** | NE PAS communiquer avant analyse | Tous |
+
+**Procédure < 4h :**
+
+| Étape | Action | Responsable |
+|-------|--------|-------------|
+| **5** | Analyse complète : quoi, quand, combien | Security |
+| **6** | Patch développé et testé | Dev |
+| **7** | Déploiement du correctif | Infra |
+| **8** | Rédaction du post-mortem | Security |
+
+**Procédure Communication (après correctif) :**
+
+| Gravité | Données exposées | Communication |
+|---------|------------------|---------------|
+| 🟢 Faible | Aucune donnée utilisateur | Blog technique uniquement |
+| 🟡 Moyenne | Métadonnées (emails, dates) | Email tous clients + blog |
+| 🔴 Haute | Données sensibles | Email + blog + régulateur (CNIL si applicable) |
+
+**Template Post-Mortem Public :**
+
+```markdown
+# Incident de sécurité du [date]
+
+## Résumé
+Le [date] à [heure], nous avons découvert [description].
+
+## Ce qui s'est passé
+[Chronologie factuelle]
+
+## Données concernées
+- ✅ NON exposé : [liste]
+- ⚠️ Potentiellement exposé : [liste]
+
+## Ce que nous avons fait
+1. [Action 1]
+2. [Action 2]
+3. [Action 3]
+
+## Ce que vous devez faire
+[Instructions utilisateurs si nécessaire]
+
+## Nos engagements
+- [Amélioration 1]
+- [Amélioration 2]
+
+## Timeline
+- [Heure] : Découverte
+- [Heure] : Analyse
+- [Heure] : Correctif déployé
+- [Heure] : Communication
+
+Nous restons transparents sur nos erreurs. C'est notre engagement.
+```
+
+---
+
+#### Crise Type D : Problème Technique Majeur (Outage)
+
+**Scénario :** VPN down pour tous les utilisateurs
+
+**Procédure Immédiate (< 5 min) :**
+
+| Étape | Action | Responsable |
+|-------|--------|-------------|
+| **1** | Vérifier : problème local ou global ? | Infra |
+| **2** | Status page : "Investigating" | Infra |
+| **3** | Tweet/Telegram : "On est au courant, on travaille" | Community |
+
+**Status Page (à préparer) :**
+
+| État | Couleur | Message |
+|------|---------|---------|
+| Operational | 🟢 | Tous les systèmes fonctionnent |
+| Degraded | 🟡 | Performances réduites |
+| Partial Outage | 🟠 | Certains utilisateurs impactés |
+| Major Outage | 🔴 | Service indisponible |
+
+**Fréquence Updates :**
+- Outage actif : toutes les 30 min
+- Investigation : toutes les heures
+- Résolu : post-mortem sous 24h
+
+---
+
+#### Crise Type E : Problème Légal (Perquisition, Injonction)
+
+**Scénario :** Demande légale de données utilisateurs
+
+**Principes :**
+1. **Architecture Zero-Knowledge** = on ne peut pas donner ce qu'on n'a pas
+2. **Transparence** = Warrant Canary mis à jour
+3. **Juridiction** = Suisse (si structure créée) = hors UE
+
+**Procédure :**
+
+| Étape | Action | Responsable |
+|-------|--------|-------------|
+| **1** | NE RIEN FAIRE sans avocat | Founder |
+| **2** | Contacter avocat spécialisé | Founder |
+| **3** | Évaluer la légitimité de la demande | Legal |
+| **4** | Répondre uniquement ce qui est légalement requis | Legal |
+| **5** | Mettre à jour Warrant Canary si applicable | Security |
+| **6** | Communication publique si permis | Founder |
+
+**Ce qu'on peut fournir (architecture Zero-Knowledge) :**
+- ❌ Contenu des communications (pas stocké)
+- ❌ Historique de navigation (pas stocké)
+- ❌ Logs de connexion (RAM-only)
+- ⚠️ Métadonnées de compte (email Managed Path uniquement)
+- ⚠️ Dates de paiement (si pas crypto)
+
+**Warrant Canary :**
+```
+Dernière mise à jour : [date]
+Signature : [signature cryptographique]
+
+Tuttle n'a reçu aucune demande légale secrète
+(National Security Letter, gag order, etc.)
+depuis la dernière mise à jour de ce document.
+```
+
+---
+
+#### Contacts d'Urgence (À Compléter)
+
+| Rôle | Nom | Contact | Backup |
+|------|-----|---------|--------|
+| **Founder** | Quentin | [tel] | - |
+| **Infra** | [À définir] | [tel] | Founder |
+| **Legal (Avocat)** | [À définir] | [tel] | - |
+| **Com de crise** | Founder | - | - |
+| **Registrar (Njalla)** | Support | [email] | - |
+| **Hébergeur (Hetzner)** | Support | [email] | - |
+
+---
+
+#### Checklist "Prêt pour une Crise"
+
+| Élément | Statut | Priorité |
+|---------|--------|----------|
+| Status page configurée | ❌ À faire | 🔴 P0 |
+| Canaux alternatifs (Telegram, Signal) | ❌ À faire | 🔴 P0 |
+| BTCPay opérationnel | ❌ À faire | 🔴 P0 |
+| Template réponses pré-rédigées | ❌ À faire | 🔴 P0 |
+| Avocat identifié | ❌ À faire | 🟠 P1 |
+| Backup hébergeur testé | ❌ À faire | 🟠 P1 |
+| Warrant Canary publié | ❌ À faire | 🟠 P1 |
+| Contacts d'urgence documentés | ❌ À faire | 🟠 P1 |
+
+---
+
 ### Stratégie de financement (Shark Tank)
 
 *Issu du stress-test face à un panel d'investisseurs fictifs*
@@ -1130,12 +1502,36 @@ Angels alignés        50K€  (5%)
 Total                550K€  (25% dilution)
 ```
 
-#### Conditions non-négociables
+#### Structure Juridique — Approche Pragmatique
+
+**Principe directeur :** Pas de structure formelle au lancement. Création en Suisse uniquement si nécessaire.
+
+| Phase | Structure | Justification |
+|-------|-----------|---------------|
+| **V1 Lancement** | Informel / Auto-entrepreneur | Validation marché, zéro friction administrative |
+| **Post-validation (M6+)** | Sàrl Suisse (GmbH) | Protection données, réputation "Swiss-made", juridiction favorable |
+| **Scale (M12+)** | Sàrl ou SA Suisse | Selon besoins investisseurs |
+
+**Pourquoi la Suisse :**
+- **Proton VPN = précédent validé** — Sàrl Suisse pour VPN privacy
+- **LPD (Loi Protection Données)** — Juridiction favorable, pas Five Eyes
+- **Réputation internationale** — "Swiss-made" = confiance
+- **Capital accessible** — 20 000 CHF pour Sàrl (vs 100 000 SA)
+- **Création rapide** — Quelques jours via Startups.ch
+
+**Cantons recommandés :**
+- **Zoug** — Crypto Valley, fiscalité attractive, anglophone
+- **Genève** — Francophone, Proton y est basé, écosystème tech
+
+**⚠️ Contrainte :** Au moins un gérant doit résider en Suisse. Prévoir expatriation ou domiciliation.
+
+**❌ Explicitement exclu :** Toute structure en France.
+
+#### Conditions non-négociables (si structure créée)
 
 1. **Mission inscrite dans les statuts** — Clause de mission sociale empêchant pivot vers modèle extractif
-2. **Conseil des Référents** — Droit de véto sur acquisition ou changement stratégique majeur
-3. **Structure résistante** — SCIC, fondation actionnaire, ou pacte blindé anti-cession
-4. **Pas de pression exit** — Investisseurs acceptent horizon long (7-10 ans) ou pas d'exit
+2. **Conseil des Référents** — Droit de véto sur acquisition ou changement stratégique majeur (V2+)
+3. **Pas de pression exit** — Investisseurs acceptent horizon long (7-10 ans) ou pas d'exit
 
 #### Checklist pré-levée
 
@@ -1143,7 +1539,7 @@ Total                550K€  (25% dilution)
 |----------|--------|----------|
 | CTO/COO identifié ? | ❌ À faire | 🔴 Oui |
 | Beta payante validant unit economics ? | ❌ À faire | 🔴 Oui |
-| Structure juridique finalisée ? | ❌ À faire | 🔴 Oui |
+| Structure juridique finalisée ? | ⚠️ Informel OK pour V1 | 🟡 Non bloquant V1 |
 | Plan com de crise documenté ? | ❌ À faire | 🟠 Recommandé |
 | Hardware en production (pas prototype) ? | ❌ À faire | 🟠 Recommandé |
 | 15+ Référents formés et engagés ? | ✅ Fait | - |
@@ -1215,7 +1611,9 @@ Total                550K€  (25% dilution)
 | **Script anti-troll** standardisé | Équipe déstabilisée par bad buzz |
 | **Chatbot FAQ** pour questions simples | Charge support réduite |
 
-#### Formation Référents obligatoire
+#### Formation Référents (V2+ — Tuttle Network)
+
+> ⚠️ **Non applicable en V1** — Les Référents n'interviennent qu'avec le déploiement du Tuttle Network en V2.
 
 | Module | Contenu | Durée |
 |--------|---------|-------|
@@ -1233,6 +1631,309 @@ Total                550K€  (25% dilution)
 | Résolution premier contact | > 50% | > 70% |
 | Tickets évités (FAQ/chatbot) | 20% | 40% |
 | NPS support | > 30 | > 50 |
+
+---
+
+### Infrastructure SAV — Chatwoot + IA
+
+**⚠️ CRITIQUE V1 : Sans SAV automatisé = Burnout = Échec**
+
+#### Solution retenue : [Chatwoot](https://www.chatwoot.com/)
+
+Chatwoot est une plateforme de support client open-source, auto-hébergeable, avec IA intégrée.
+
+**Pourquoi Chatwoot :**
+
+| Critère | Chatwoot | Alternatives |
+|---------|----------|--------------|
+| **Open Source** | ✅ MIT License | Zammad (AGPL), Papercups (MIT mais maintenance mode) |
+| **Auto-hébergeable** | ✅ Docker/K8s | ✅ |
+| **IA intégrée** | ✅ "Captain" (résumés, suggestions, auto-réponses) | ⚠️ Intégrations tierces |
+| **Omnichannel** | ✅ Chat, Email, WhatsApp, Telegram, Twitter | Variable |
+| **Dashboard centralisé** | ✅ Inbox unifié | ✅ |
+| **API & Webhooks** | ✅ Complet | ✅ |
+
+#### Architecture Chatwoot
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                         SAV Tuttle                               │
+│                                                                  │
+│  ┌─────────────┐    ┌─────────────────────────────────────────┐ │
+│  │ tuttle-store │───▶│ Chatwoot (K8s Deployment)               │ │
+│  │ Widget Chat  │    │                                         │ │
+│  └─────────────┘    │ ┌─────────────────┐ ┌────────────────┐  │ │
+│                      │ │ Captain IA      │ │ Inbox Unifié   │  │ │
+│  ┌─────────────┐    │ │ - Auto-réponses │ │ - Chat         │  │ │
+│  │ Email       │───▶│ │ - Résumés conv. │ │ - Email        │  │ │
+│  │ support@    │    │ │ - Suggestions   │ │ - Telegram     │  │ │
+│  └─────────────┘    │ └─────────────────┘ │ - WhatsApp     │  │ │
+│                      │                     └────────────────┘  │ │
+│  ┌─────────────┐    │                                         │ │
+│  │ Telegram    │───▶│ Dashboard Admin ◄─────────────────────┐ │ │
+│  │ @tuttle_bot │    │ - Métriques temps réel                │ │ │
+│  └─────────────┘    │ - Assignation agents                  │ │ │
+│                      │ - Tags & catégories                   │ │ │
+│                      │ - Rapports & exports                  │ │ │
+│                      └─────────────────────────────────────────┘ │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+#### Fonctionnalités IA "Captain"
+
+| Feature | Description | Impact |
+|---------|-------------|--------|
+| **Auto-réponses FAQ** | Répond automatiquement aux questions courantes | -40% tickets |
+| **Résumé conversation** | Synthèse IA pour reprise rapide | Temps agent -30% |
+| **Suggestions réponse** | Propose des réponses basées sur l'historique | Qualité +20% |
+| **Catégorisation auto** | Tag automatique des tickets | Triage instantané |
+| **Détection sentiment** | Alerte si client frustré/en colère | Escalade proactive |
+
+#### Configuration K8s/Flux
+
+```yaml
+# tuttle-infra/flux/apps/chatwoot/helmrelease.yaml
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: chatwoot
+  namespace: support
+spec:
+  chart:
+    spec:
+      chart: chatwoot
+      sourceRef:
+        kind: HelmRepository
+        name: chatwoot
+  values:
+    # IA Captain
+    env:
+      OPENAI_API_KEY: ${OPENAI_API_KEY}  # Pour Captain IA
+
+    # Canaux
+    channels:
+      web_widget:
+        enabled: true
+      email:
+        enabled: true
+        smtp_address: smtp.tuttle.net
+      telegram:
+        enabled: true
+        bot_token: ${TELEGRAM_BOT_TOKEN}
+
+    # Base de données
+    postgresql:
+      enabled: true
+      persistence:
+        size: 10Gi
+
+    # Redis pour queues
+    redis:
+      enabled: true
+```
+
+#### FAQ Technique Structurée
+
+La FAQ doit être **techniquement solide** et **optimisée IA** :
+
+```
+tuttle-store/content/faq/
+├── fr/
+│   ├── connexion/
+│   │   ├── comment-me-connecter.md
+│   │   ├── vpn-ne-fonctionne-pas.md
+│   │   └── erreur-authentification.md
+│   ├── clean-pipe/
+│   │   ├── site-bloque-par-erreur.md
+│   │   ├── youtube-tiktok.md
+│   │   └── ajouter-whitelist.md
+│   ├── paiement/
+│   │   ├── bitcoin-monero.md
+│   │   ├── annuler-abonnement.md
+│   │   └── facture.md
+│   └── technique/
+│       ├── wireguard-config.md
+│       ├── multi-appareils.md
+│       └── logs-diagnostic.md
+├── en/
+│   └── ... (miroir structure FR)
+└── schema.json  # Structure pour indexation IA
+```
+
+**Format FAQ optimisé IA :**
+
+```markdown
+---
+title: "Le VPN ne se connecte pas"
+category: connexion
+tags: [vpn, connexion, erreur, wireguard]
+difficulty: easy
+ai_summary: "Guide de dépannage pour les problèmes de connexion VPN"
+---
+
+## Problème
+Votre application Tuttle affiche "Connexion impossible" ou reste bloquée.
+
+## Solution rapide
+1. Vérifiez votre connexion internet (WiFi/4G)
+2. Redémarrez l'application Tuttle
+3. Si le problème persiste, changez de serveur
+
+## Solution détaillée
+[...]
+
+## Toujours bloqué ?
+Contactez-nous via le chat avec ce code : `DIAG-CONN-001`
+```
+
+#### Dashboard Admin Unifié
+
+**Question :** Le dashboard admin est-il prévu dans l'état actuel ?
+
+**Réponse :** Medusa v2 offre un dashboard e-commerce (commandes, clients, produits) mais **pas de SAV natif**. L'approche recommandée :
+
+| Fonction | Outil | Intégration |
+|----------|-------|-------------|
+| **E-commerce** (commandes, produits, clients) | Medusa Admin | Natif |
+| **SAV** (tickets, chat, email) | Chatwoot | Widget + Webhooks |
+| **Monitoring infra** | Grafana | Métriques Prometheus |
+| **Provisioning VPN** | tuttle-network V2 (ou CLI admin) | API Provisioner |
+
+**V1 Pragmatique :**
+- Medusa Admin pour l'e-commerce
+- Chatwoot pour le SAV
+- Pas de dashboard unifié custom V1 (trop de dev)
+
+**V2+ :** Dashboard unifié potentiel dans tuttle-network.
+
+---
+
+### SEO, Accessibilité & AI Search Optimization
+
+**Priorité AVANT marketing : Site techniquement irréprochable**
+
+#### Stack SEO Nuxt 3
+
+```typescript
+// nuxt.config.ts
+export default defineNuxtConfig({
+  modules: [
+    '@nuxtjs/seo',        // All-in-one SEO
+    '@nuxt/content',       // FAQ markdown
+    'nuxt-schema-org',     // Schema.org automatique
+    '@nuxtjs/sitemap',     // Sitemap multilingue
+  ],
+
+  seo: {
+    automaticDefaults: true,
+  },
+
+  schemaOrg: {
+    identity: {
+      type: 'Organization',
+      name: 'Tuttle',
+      logo: '/logo.png',
+    },
+  },
+
+  sitemap: {
+    xsl: false,
+    autoLastmod: true,
+    i18n: {
+      locales: ['fr', 'en', 'es', 'ru', 'it', 'pt'],
+      strategy: 'prefix_except_default',
+    },
+  },
+})
+```
+
+#### llms.txt — Optimisation AI Search
+
+Le standard [llms.txt](https://llmstxt.org/) guide les LLMs vers le contenu pertinent :
+
+```markdown
+# tuttle-store/public/llms.txt
+
+# Tuttle - Souveraineté Numérique
+
+> Tuttle est un VPN avec Clean Pipe (filtrage famille) pour reprendre le contrôle de votre vie numérique.
+
+## Documentation
+
+- [FAQ Connexion](/faq/connexion): Résoudre les problèmes de connexion VPN
+- [FAQ Clean Pipe](/faq/clean-pipe): Configurer le filtrage famille
+- [FAQ Paiement](/faq/paiement): Bitcoin, Monero, abonnements
+- [Manifeste](/manifeste): Notre vision de la souveraineté numérique
+- [Threat Model](/securite/threat-model): Ce que Tuttle protège et ne protège pas
+
+## Produits
+
+- [Tuttle VPN](/produits/vpn): VPN + Clean Pipe, 12€/mois
+- [Tuttle Key](/produits/key): Clé HSM (V1.5)
+
+## Contact
+
+- Support: support@tuttle.net
+- Chat: Widget sur le site
+```
+
+#### Nuxt AI Ready Module
+
+```typescript
+// nuxt.config.ts
+export default defineNuxtConfig({
+  modules: ['nuxt-llms'],  // Génère llms.txt automatiquement
+
+  llms: {
+    domain: 'https://tuttle.net',
+    title: 'Tuttle - Souveraineté Numérique',
+    description: 'VPN avec Clean Pipe pour Internet propre et privé',
+    sections: [
+      { title: 'FAQ', path: '/faq' },
+      { title: 'Produits', path: '/produits' },
+      { title: 'Sécurité', path: '/securite' },
+    ],
+  },
+})
+```
+
+#### Accessibilité WCAG 2.1 AA
+
+| Critère | Implémentation | Outil |
+|---------|----------------|-------|
+| **Contraste couleurs** | Ratio minimum 4.5:1 | `@nuxtjs/color-mode` + audit |
+| **Navigation clavier** | Focus visible, skip links | Tests manuels |
+| **Lecteurs d'écran** | ARIA labels, alt text | `axe-core` |
+| **Texte redimensionnable** | rem/em, pas de px fixes | CSS audit |
+| **Formulaires** | Labels associés, erreurs claires | `@vuelidate/nuxt` |
+
+**Audit automatisé CI :**
+
+```yaml
+# .woodpecker.yml
+steps:
+  - name: accessibility-audit
+    image: node:20
+    commands:
+      - npx @axe-core/cli https://tuttle.net --tags wcag2aa
+      - npx lighthouse https://tuttle.net --only-categories=accessibility --output=json
+```
+
+#### Checklist SEO/AI V1
+
+| Critère | Statut | Priorité |
+|---------|--------|----------|
+| SSR activé (Nuxt default) | ✅ | P0 |
+| Meta titles/descriptions uniques | ❌ À faire | P0 |
+| Schema.org (Organization, Product, FAQ) | ❌ À faire | P0 |
+| Sitemap multilingue | ❌ À faire | P0 |
+| llms.txt | ❌ À faire | P1 |
+| Open Graph / Twitter Cards | ❌ À faire | P1 |
+| robots.txt optimisé | ❌ À faire | P1 |
+| Core Web Vitals (LCP < 2.5s) | ❌ À mesurer | P1 |
+| Accessibilité WCAG 2.1 AA | ❌ À auditer | P1 |
+| Canonical URLs i18n | ❌ À faire | P2 |
+| Structured FAQ schema | ❌ À faire | P2 |
 
 #### Verbatims à ne jamais oublier
 
@@ -1876,6 +2577,206 @@ Tuttle : "C'est mieux parce que..."
 
 ---
 
+### Competitor Playbook — Réponses Stratégiques
+
+*Document stratégique cross-projet : Comment réagir aux mouvements concurrentiels*
+
+#### Principe Directeur
+
+> **Ne jamais réagir dans la panique.** Chaque réponse est préparée à l'avance. L'avantage de Tuttle n'est pas la feature — c'est l'authenticité, la communauté, et la mission.
+
+#### Cartographie des Menaces Concurrentielles
+
+| Concurrent | Probabilité Attaque | Type de Menace | Délai Réaction |
+|------------|---------------------|----------------|----------------|
+| **NordVPN** | 🔴 Haute | Feature copy ("NordFamily") | 6-12 mois |
+| **Proton** | 🟠 Moyenne | Positionnement privacy famille | 12-18 mois |
+| **FAI (Orange, Free)** | 🟠 Moyenne | Amélioration contrôle parental gratuit | 6-12 mois |
+| **EnikmaVPN** | 🟡 Faible | Comeback V2 avec features Tuttle | 12+ mois |
+| **Nouvel entrant** | 🟡 Faible | Clone complet | 18+ mois |
+
+---
+
+#### Scénario 1 : NordVPN lance "NordFamily"
+
+**Probabilité :** 🔴 Haute (Clean Pipe = feature évidente à copier)
+
+**Ce qu'ils peuvent copier :**
+- Filtrage DNS famille
+- Dashboard "contenus bloqués"
+- Marketing "protection enfants"
+- Prix agressif (5-7€/mois)
+
+**Ce qu'ils NE PEUVENT PAS copier :**
+| Asset Tuttle | Pourquoi non-copiable |
+|--------------|----------------------|
+| **Manifeste & Valeurs** | Authenticité ≠ marketing. NordVPN = corporate. Tuttle = mission. |
+| **Communauté organique** | Années de construction. Pas achetable. |
+| **Zero-Knowledge prouvé** | NordVPN a eu des incidents. Confiance perdue. |
+| **Open Source** | NordVPN = closed source. Robert ne leur fait pas confiance. |
+| **Positionnement dissident** | NordVPN = mainstream. Incompatible avec notre cible. |
+| **Fondateur visible** | Quentin = histoire vraie. CEO NordVPN = inconnu. |
+
+**Réponse préparée :**
+
+| Action | Délai | Responsable |
+|--------|-------|-------------|
+| 1. **Pas de réaction publique immédiate** | J+0 | - |
+| 2. **Post blog : "Pourquoi le Clean Pipe n'est pas une feature"** | J+3 | tuttle-store (contenu) |
+| 3. **Tableau comparatif honnête Tuttle vs NordFamily** | J+7 | tuttle-store |
+| 4. **Témoignages clients : "Pourquoi j'ai choisi Tuttle"** | J+14 | tuttle-master (coordination) |
+| 5. **Renforcement messaging : valeurs, pas features** | Continu | tuttle-store |
+
+**Message type (blog) :**
+> "NordVPN vient de lancer NordFamily. C'est flatteur — ils copient ce qu'on a créé. Mais voici pourquoi une feature copiée n'est pas Tuttle : [...]"
+
+**Canaux de diffusion :**
+- Blog Tuttle
+- Newsletter existante
+- Telegram/Signal communauté
+- PAS de publicité réactive (ne pas valider leur move)
+
+---
+
+#### Scénario 2 : Proton lance "Proton Family"
+
+**Probabilité :** 🟠 Moyenne
+
+**Différence avec NordVPN :** Proton a une crédibilité privacy. Menace plus sérieuse sur le segment Robert/Sophie.
+
+**Ce qu'ils peuvent copier :**
+- Clean Pipe
+- Positionnement famille
+- Open source (déjà le cas)
+
+**Ce qu'ils NE PEUVENT PAS copier :**
+| Asset Tuttle | Pourquoi |
+|--------------|----------|
+| **Incident logs IP** | Proton a fourni des logs à la justice. Confiance entamée. |
+| **Prix** | Proton = premium. Tuttle = accessible. |
+| **Communauté dissidente** | Proton = mainstream suisse. Tuttle = résistance. |
+| **Agilité** | Proton = 400 personnes. Tuttle = startup. |
+
+**Réponse préparée :**
+
+| Action | Délai |
+|--------|-------|
+| 1. **Rappeler l'incident logs IP de 2021** | J+3 |
+| 2. **Tableau "Promesses vs Réalité"** | J+7 |
+| 3. **Renforcer le Warrant Canary visible** | J+14 |
+| 4. **Témoignages Robert-type : "Pourquoi pas Proton"** | J+21 |
+
+**Message type :**
+> "Proton fait du bon travail. Mais en 2021, ils ont fourni des logs IP à la justice française. Chez Tuttle, notre architecture rend cela techniquement impossible. Voici comment : [...]"
+
+---
+
+#### Scénario 3 : FAI améliore le contrôle parental gratuit
+
+**Probabilité :** 🟠 Moyenne (pression réglementaire, image famille)
+
+**Ce qu'ils peuvent faire :**
+- Améliorer le filtrage DNS
+- Ajouter un dashboard
+- Mieux communiquer sur la feature gratuite
+
+**Ce qu'ils NE PEUVENT PAS faire :**
+| Limite FAI | Pourquoi |
+|------------|----------|
+| **VPN** | Pas leur métier. Conflit d'intérêt (ils vendent les données). |
+| **Hors domicile** | Leur contrôle = leur box. Pas le mobile 4G. |
+| **Zero-Knowledge** | ILS SONT LE FAI. Ils voient tout par définition. |
+| **Confiance** | Orange/Free = GAFAM français. Pas de crédibilité privacy. |
+
+**Réponse préparée :**
+
+| Action | Délai |
+|--------|-------|
+| 1. **Page comparative renforcée "Tuttle vs Contrôle FAI"** | Immédiat |
+| 2. **Infographie : "Ce que votre FAI voit"** | J+7 |
+| 3. **Angle : "Protection partout, pas juste à la maison"** | Continu |
+
+**Message type :**
+> "Le contrôle parental de votre box protège votre salon. Pas le téléphone de votre ado dans le bus. Pas le WiFi du McDo. Tuttle vous suit partout."
+
+---
+
+#### Scénario 4 : EnikmaVPN revient en force
+
+**Probabilité :** 🟡 Faible (équipe réduite, tech datée)
+
+**Menace réelle :** Légitimité historique dans la sphère dissidente (E&R).
+
+**Réponse préparée :**
+
+| Approche | Action |
+|----------|--------|
+| **Coopération** | Proposer partenariat ou acquisition avant qu'ils ne lancent |
+| **Différenciation** | Tech moderne vs tech datée, transparence vs opacité |
+| **Non-agression** | Ne jamais attaquer frontalement (même communauté) |
+
+**Message type :**
+> "EnikmaVPN a ouvert la voie. On continue le chemin avec une tech moderne. Pas de guerre — même combat."
+
+---
+
+#### Scénario 5 : Attaque coordonnée (FUD + Astroturfing)
+
+**Probabilité :** 🟡 Faible mais possible si Tuttle grandit
+
+**Signaux d'alerte :**
+- Vague soudaine de reviews négatives (Trustpilot, Twitter)
+- Articles "investigatifs" simultanés
+- Questions techniques pointues répétées (probing)
+
+**Réponse préparée :**
+
+| Phase | Action |
+|-------|--------|
+| **Détection** | Monitoring social (mentions, sentiment) |
+| **Analyse** | Distinguer critique légitime vs coordonné (timing, comptes, arguments) |
+| **Réponse** | Post factuel, pas défensif. Transparence totale. |
+| **Mobilisation** | Activer la communauté pour témoignages authentiques |
+
+**Message type :**
+> "On remarque une vague de critiques coordonnées. Voici les faits : [liens vers docs, code, audits]. Nos utilisateurs peuvent témoigner."
+
+---
+
+#### Matrice de Réponse Rapide
+
+| Si... | Alors... | Ne jamais... |
+|-------|----------|--------------|
+| Concurrent copie une feature | Communiquer sur les valeurs, pas la feature | Entrer dans une guerre de features |
+| Article hostile | Réponse factuelle + droit de réponse | Attaquer le journaliste personnellement |
+| Baisse de prix concurrent | Renforcer la valeur (communauté, mission) | Baisser les prix en réaction |
+| Rumeur/FUD | Transparence immédiate + preuves | Ignorer (le silence = culpabilité perçue) |
+| Acquisition proposée | Refus poli + communication communauté | Négocier en secret |
+
+---
+
+#### Assets Défensifs à Construire (Pré-lancement)
+
+| Asset | Description | Priorité |
+|-------|-------------|----------|
+| **Page "Pourquoi Tuttle"** | Différenciateurs vs alternatives | 🔴 P0 |
+| **Page "Tuttle vs FAI"** | Comparatif honnête | 🔴 P0 |
+| **Page "Tuttle vs Concurrents"** | NordVPN, Proton, Mullvad | 🟠 P1 |
+| **Témoignages vidéo** | 3-5 early adopters | 🟠 P1 |
+| **Threat Model public** | Transparence technique | 🟠 P1 |
+| **Warrant Canary** | Preuve d'intégrité continue | 🟠 P1 |
+| **Blog "Notre Vision"** | Articles de fond sur la mission | 🟡 P2 |
+
+---
+
+#### Principe Anti-Panique
+
+> **En cas de doute, ne rien faire pendant 24h.**
+>
+> La plupart des "crises" concurrentielles sont des non-événements. Une réaction précipitée amplifie le problème. Respirer, analyser, puis agir avec méthode.
+
+---
+
 ### Causes Racines (5 Whys)
 
 *Issu du 5 Whys Deep Dive — creuser jusqu'à la racine*
@@ -2329,6 +3230,99 @@ tuttle-master/                          # Niveau 0 - Master
 | **tuttle-hardware** | Firmware | Rust + Embedded | V1.5 Deferred | ⚠️ Brownfield |
 | **tuttle-libs** | Libraries | TypeScript + Go | Shared | ✅ Code actif |
 
+#### 4b. Internationalisation V1 — Multilangue Dès Lancement
+
+**Langues supportées V1 :**
+
+| Langue | Code | Priorité | Marché cible |
+|--------|------|----------|--------------|
+| **Français** | `fr` | Source | France, Belgique, Suisse, Québec |
+| **Anglais** | `en` | P1 | International, UK, US, Commonwealth |
+| **Espagnol** | `es` | P2 | Espagne, Amérique Latine |
+| **Russe** | `ru` | P2 | Russie, ex-URSS, dissidents |
+| **Italien** | `it` | P3 | Italie, Suisse italienne |
+| **Portugais** | `pt` | P3 | Portugal, Brésil |
+
+**Stack i18n (Nuxt 3) :**
+
+```
+tuttle-store/
+├── locales/
+│   ├── fr.json    # Français (SOURCE OF TRUTH)
+│   ├── en.json    # Anglais
+│   ├── es.json    # Espagnol
+│   ├── ru.json    # Russe
+│   ├── it.json    # Italien
+│   └── pt.json    # Portugais
+├── nuxt.config.ts  # @nuxtjs/i18n configuration
+└── composables/
+    └── useI18n.ts  # Helpers traduction
+```
+
+**Configuration Nuxt i18n :**
+
+```typescript
+// nuxt.config.ts
+export default defineNuxtConfig({
+  modules: ['@nuxtjs/i18n'],
+  i18n: {
+    locales: [
+      { code: 'fr', iso: 'fr-FR', file: 'fr.json', name: 'Français' },
+      { code: 'en', iso: 'en-US', file: 'en.json', name: 'English' },
+      { code: 'es', iso: 'es-ES', file: 'es.json', name: 'Español' },
+      { code: 'ru', iso: 'ru-RU', file: 'ru.json', name: 'Русский' },
+      { code: 'it', iso: 'it-IT', file: 'it.json', name: 'Italiano' },
+      { code: 'pt', iso: 'pt-PT', file: 'pt.json', name: 'Português' },
+    ],
+    defaultLocale: 'fr',
+    strategy: 'prefix_except_default',
+    lazy: true,
+    langDir: 'locales/',
+    detectBrowserLanguage: {
+      useCookie: true,
+      cookieKey: 'tuttle_locale',
+      fallbackLocale: 'en',
+    },
+  },
+})
+```
+
+**Workflow Traduction IA :**
+
+```
+1. Rédiger contenu FR (source of truth)
+   └── locales/fr.json
+
+2. Script traduction IA (Claude API)
+   └── scripts/translate-locales.ts
+   └── Input: fr.json → Output: en.json, es.json, ru.json, it.json, pt.json
+
+3. Review humain (pages critiques)
+   └── Landing page, Checkout, CGV, Manifeste
+   └── Priorité: EN > ES > RU > IT > PT
+
+4. Commit & Deploy
+   └── git add locales/ && git commit -m "Update translations"
+```
+
+**Pages Critiques à Review Humain :**
+
+| Page | Priorité Review | Raison |
+|------|-----------------|--------|
+| Landing page | 🔴 P0 | Première impression |
+| Checkout/Paiement | 🔴 P0 | Conversion |
+| CGV/Mentions légales | 🔴 P0 | Juridique |
+| Manifeste | 🟠 P1 | Identité marque |
+| FAQ | 🟡 P2 | Support |
+| Dashboard | 🟡 P2 | UX quotidienne |
+
+**SEO Multilangue :**
+
+- URLs localisées : `/fr/`, `/en/`, `/es/`, `/ru/`, `/it/`, `/pt/`
+- Balises `hreflang` automatiques
+- Sitemap par langue
+- Meta descriptions traduites
+
 #### 5. Système de Transmission BMAD
 
 - **Mailbox** pour chaque projet (subscriptions, triggers, escalation)
@@ -2506,9 +3500,161 @@ tuttle-master/                          # Niveau 0 - Master
 | **4 serveurs** (2 SANCTUARY, 2 BALANCED) | ✅ | + scale |
 | **Legislative Weather déclaratif** | ✅ ENV/config | ✅ Dynamique |
 | **Visuel web pools** | ✅ (basé sur config) | ✅ (temps réel) |
+| **Clean Pipe (Blocky DNS)** | ✅ | ✅ + UI config |
 | LightWeb mesh (NetBird) | ❌ | ✅ |
 | Multi-hop | ❌ | ✅ |
 | V2Ray obfuscation | ❌ | ✅ |
+
+---
+
+### Clean Pipe Architecture — Blocky DNS
+
+**Solution retenue : [Blocky](https://github.com/0xERR0R/blocky)**
+
+Blocky est un proxy DNS léger, open-source, écrit en Go, optimisé pour Kubernetes et GitOps.
+
+#### Pourquoi Blocky
+
+| Critère | Blocky | AdGuard Home | Pi-hole |
+|---------|--------|--------------|---------|
+| **GitOps/Flux native** | ✅ Config-as-code | ⚠️ UI-first | ⚠️ Complexe |
+| **K8s Helm chart** | ✅ Officiel | ✅ Communauté | ⚠️ Docker-first |
+| **DoH/DoT/DoQ** | ✅ Intégré | ✅ Intégré | ❌ Add-on requis |
+| **Légèreté** | ✅ ~15MB, Go | ⚠️ ~50MB | ⚠️ PHP + SQLite |
+| **Auto-update listes** | ✅ Natif | ✅ Natif | ✅ Natif |
+
+#### Architecture Déploiement
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                       tuttle-vpn                             │
+│                                                              │
+│  ┌──────────────┐         ┌─────────────────────────────┐   │
+│  │ WireGuard    │────────▶│ Blocky (K8s Deployment)     │   │
+│  │ Nodes        │  DNS    │                             │   │
+│  │              │  53/udp │ Replicas: 2+ (HA)           │   │
+│  └──────────────┘         │ Upstream: Quad9 DoT         │   │
+│                           │                             │   │
+│                           │ Blocklists:                 │   │
+│                           │ ├── Hagezi Pro (ads)        │   │
+│                           │ ├── Hagezi Ultimate (porn)  │   │
+│                           │ ├── Hagezi TIF (trackers)   │   │
+│                           │ └── Custom Tuttle (updates) │   │
+│                           └─────────────────────────────┘   │
+│                                        │                     │
+│                                        ▼                     │
+│                           ┌─────────────────────────────┐   │
+│                           │ Upstream DNS (DoT)          │   │
+│                           │ - 9.9.9.9:853 (Quad9)       │   │
+│                           │ - 1.1.1.1:853 (Cloudflare)  │   │
+│                           └─────────────────────────────┘   │
+└─────────────────────────────────────────────────────────────┘
+```
+
+#### Configuration Flux
+
+```yaml
+# tuttle-infra/flux/apps/blocky/helmrelease.yaml
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: blocky
+  namespace: dns
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: blocky
+      version: ">=1.0.0"
+      sourceRef:
+        kind: HelmRepository
+        name: k8s-at-home
+        namespace: flux-system
+  values:
+    replicas: 2
+
+    config:
+      # Upstream DNS avec chiffrement
+      upstream:
+        default:
+          - tcp-tls:9.9.9.9:853    # Quad9 DoT (primary)
+          - tcp-tls:1.1.1.1:853    # Cloudflare DoT (fallback)
+
+      # Blocklists - Hagezi Pro (maintenues, auto-update)
+      blocking:
+        blackLists:
+          ads:
+            - https://raw.githubusercontent.com/hagezi/dns-blocklists/main/wildcard/pro.txt
+          porn:
+            - https://raw.githubusercontent.com/hagezi/dns-blocklists/main/wildcard/popupads.txt
+            - https://raw.githubusercontent.com/hagezi/dns-blocklists/main/wildcard/ultimate.txt
+          trackers:
+            - https://raw.githubusercontent.com/hagezi/dns-blocklists/main/wildcard/tif.txt
+          malware:
+            - https://raw.githubusercontent.com/hagezi/dns-blocklists/main/wildcard/fake.txt
+
+        # Groupes de blocage par défaut
+        clientGroupsBlock:
+          default:
+            - ads
+            - porn
+            - trackers
+            - malware
+
+        # Rafraîchissement automatique
+        refreshPeriod: 24h
+
+      # Logging minimal (Zero-Knowledge)
+      queryLog:
+        type: none  # Pas de logs requêtes
+
+      # Métriques Prometheus
+      prometheus:
+        enable: true
+        path: /metrics
+
+    # Service LoadBalancer pour nodes VPN
+    service:
+      main:
+        type: LoadBalancer
+        ports:
+          dns-tcp:
+            port: 53
+            protocol: TCP
+          dns-udp:
+            port: 53
+            protocol: UDP
+```
+
+#### Listes Hagezi Utilisées
+
+| Liste | Contenu | Entrées | Usage |
+|-------|---------|---------|-------|
+| **[Pro](https://github.com/hagezi/dns-blocklists)** | Ads, trackers, analytics | ~300K | Base ads |
+| **[Ultimate](https://github.com/hagezi/dns-blocklists)** | Porn, adult content | ~500K | Clean Pipe core |
+| **[TIF](https://github.com/hagezi/dns-blocklists)** | Threat Intel Feeds | ~100K | Malware, phishing |
+| **[Fake](https://github.com/hagezi/dns-blocklists)** | Fake shops, scams | ~50K | Protection commerce |
+
+#### UI Configuration (V2)
+
+Pour V1 : Configuration via Flux uniquement (GitOps).
+
+Pour V2 : Dashboard tuttle-network avec :
+- Toggle par catégorie (ads, porn, trackers, malware)
+- Whitelist personnalisable
+- Profils par appareil (Enfant strict, Ado, Adulte)
+- Logs agrégés (compteur blocages, pas de détails)
+
+#### Métriques Clean Pipe
+
+| Métrique | Source | Dashboard |
+|----------|--------|-----------|
+| `blocky_query_total` | Prometheus | Requêtes totales |
+| `blocky_blocked_total` | Prometheus | Requêtes bloquées |
+| `blocky_cache_hit_ratio` | Prometheus | Performance cache |
+
+**Rapport hebdo Christophe :**
+> "Cette semaine : 247 publicités, 12 trackers, 3 contenus adultes bloqués. Votre famille est protégée."
 
 ---
 
@@ -2589,6 +3735,183 @@ tuttle-master/                          # Niveau 0 - Master
 ---
 
 ### 🚀 V1 LAUNCH
+
+#### D3 — Beta Checklist : Critères Go/No-Go V1
+
+##### Readiness Technique par Projet
+
+| Projet | Critère | Validation | Blocker |
+|--------|---------|------------|---------|
+| **tuttle-infra** | K8s cluster opérationnel | `kubectl get nodes` = Ready | 🔴 |
+| | Flux déployé et synchronisé | `flux get all` = Ready | 🔴 |
+| | SOPS fonctionnel | Secret déchiffré en cluster | 🔴 |
+| | Monitoring actif | Grafana dashboards visibles | 🟡 |
+| | Backups PostgreSQL | Restore testé avec succès | 🔴 |
+| **tuttle-store** | Landing page accessible | HTTPS + certificat valide | 🔴 |
+| | Medusa API fonctionnelle | `/store/products` répond | 🔴 |
+| | Stripe paiement CB | Transaction test réussie | 🔴 |
+| | BTCPay paiement BTC | Transaction test réussie | 🔴 |
+| | Webhook → Provisioner | Event reçu en < 5s | 🔴 |
+| | i18n FR/EN | Pages traduites, switch fonctionnel | 🟡 |
+| **tuttle-vpn** | 4 serveurs tuttle-os | SSH accessible, WireGuard up | 🔴 |
+| | Legislative Weather config | Blocklists chargées | 🔴 |
+| | Clean Pipe (Blocky) | DNS bloque domaines test | 🟡 |
+| | Latence acceptable | Ping < 50ms depuis Paris | 🔴 |
+| | Uptime 48h sans crash | Monitoring confirme | 🔴 |
+| **tuttle-provisioner** | Webhook Medusa reçu | Log confirme réception | 🔴 |
+| | User VPN créé | Credentials générés | 🔴 |
+| | Config envoyée | Email ou API client | 🔴 |
+| | Rollback en cas d'échec | Transaction compensée | 🟡 |
+| **tuttle-apps/android** | APK signé | Installable hors Play Store | 🔴 |
+| | Connexion VPN | Tunnel établi en < 10s | 🔴 |
+| | Import config | QR code ou deep link | 🔴 |
+| | Kill switch | Trafic bloqué si VPN down | 🟡 |
+| **tuttle-apps/windows** | Installer signé | SmartScreen passé | 🔴 |
+| | Connexion VPN | Tunnel établi en < 10s | 🔴 |
+| | Import config | Fichier ou deep link | 🔴 |
+| | Autostart | Option fonctionnelle | 🟡 |
+
+**Légende :** 🔴 = Bloquant V1, 🟡 = Important mais non bloquant
+
+##### Readiness Business
+
+| Critère | Validation | Responsable | Status |
+|---------|------------|-------------|--------|
+| **CGV/CGU** | Documents juridiques publiés | Founder | ☐ |
+| **Politique de confidentialité** | RGPD compliant, Zero-Log déclaré | Founder | ☐ |
+| **Tarification finalisée** | Prix affichés, plans configurés Medusa | Founder | ☐ |
+| **Warrant Canary** | Page statique publiée | Founder | ☐ |
+| **Email support** | support@ configuré, réception testée | Founder | ☐ |
+| **Chatwoot** | Widget installé, AI Captain configuré | Founder | ☐ |
+| **FAQ** | 10+ questions documentées | Founder | ☐ |
+| **Tunnel d'achat testé** | 5 achats end-to-end (CB + BTC) | Founder | ☐ |
+
+##### Readiness Opérationnelle
+
+| Critère | Validation | Responsable | Status |
+|---------|------------|-------------|--------|
+| **Runbook incidents** | Procédures documentées | Founder | ☐ |
+| **Alerting configuré** | Notifications Slack/Telegram | Founder | ☐ |
+| **Accès emergency** | VPN admin + SSH keys backup | Founder | ☐ |
+| **Rollback plan** | Procédure retour version N-1 | Founder | ☐ |
+| **Contact hébergeurs** | Numéros/emails support Hetzner, etc. | Founder | ☐ |
+| **Backup wallet BTCPay** | Seed sauvegardée hors-ligne | Founder | ☐ |
+| **DNS failover** | Cloudflare ou équivalent configuré | Founder | ☐ |
+
+##### Smoke Test Final (Tunnel Complet)
+
+**Scénario Christophe — Parcours Géré :**
+```
+1. ☐ Accès landing page tuttle.io
+2. ☐ Sélection offre VPN mensuelle
+3. ☐ Création compte (email/password)
+4. ☐ Paiement Stripe CB
+5. ☐ Réception email confirmation + credentials
+6. ☐ Téléchargement app Android
+7. ☐ Import configuration VPN
+8. ☐ Connexion réussie
+9. ☐ Navigation web via VPN (IP vérifiée)
+10. ☐ Clean Pipe actif (pub bloquée)
+```
+
+**Scénario Robert — Parcours Souverain :**
+```
+1. ☐ Accès landing page tuttle.io
+2. ☐ Sélection offre VPN annuelle
+3. ☐ Choix "Continuer sans compte"
+4. ☐ Paiement BTCPay (ou Stripe sans compte)
+5. ☐ Réception credentials via page unique
+6. ☐ Téléchargement app Windows
+7. ☐ Import configuration VPN
+8. ☐ Connexion réussie
+9. ☐ Navigation web via VPN (IP vérifiée)
+10. ☐ Accès sites bloqués France (test dissidence)
+```
+
+##### Matrice Go/No-Go
+
+| Catégorie | Critères 🔴 | Min. pour Go | Critères 🟡 | Min. pour Go |
+|-----------|-------------|--------------|-------------|--------------|
+| tuttle-infra | 5 | 5/5 | 1 | 0/1 |
+| tuttle-store | 6 | 6/6 | 1 | 0/1 |
+| tuttle-vpn | 5 | 5/5 | 1 | 0/1 |
+| tuttle-provisioner | 3 | 3/3 | 1 | 0/1 |
+| tuttle-apps/android | 3 | 3/3 | 1 | 0/1 |
+| tuttle-apps/windows | 3 | 3/3 | 1 | 0/1 |
+| Business | 8 | 6/8 | - | - |
+| Opérationnel | 7 | 5/7 | - | - |
+| Smoke Test | 20 | 18/20 | - | - |
+
+**Décision :**
+- **GO** : Tous les critères 🔴 validés + minimums atteints
+- **CONDITIONAL GO** : 1-2 critères 🔴 en cours de résolution (fix < 24h)
+- **NO-GO** : > 2 critères 🔴 non validés ou smoke test < 16/20
+
+##### Checklist Jour J-1
+
+```markdown
+## Veille du lancement
+
+### Infrastructure
+- [ ] Tous les pods K8s en Running
+- [ ] Certificats SSL valides > 30 jours
+- [ ] Disk usage < 70% sur tous les nodes
+- [ ] Backups vérifiés (dernière < 24h)
+
+### Monitoring
+- [ ] Grafana accessible
+- [ ] Alertes Slack/Telegram testées
+- [ ] Logs centralisés fonctionnels
+
+### Business
+- [ ] Landing page finale déployée
+- [ ] Prix corrects affichés
+- [ ] Emails transactionnels testés
+- [ ] Chatwoot en ligne
+
+### Communication
+- [ ] Annonce préparée (pas publiée)
+- [ ] Early adopters prévenus
+- [ ] Canaux support surveillés
+
+### Sécurité
+- [ ] Firewall rules vérifiées
+- [ ] Fail2ban actif sur tous les serveurs
+- [ ] Aucun port exposé inutilement
+- [ ] Secrets rotés récemment
+```
+
+##### Checklist Jour J (Launch)
+
+```markdown
+## Jour du lancement
+
+### H-2 : Dernières vérifications
+- [ ] Smoke test complet (2 parcours)
+- [ ] Monitoring dashboard ouvert
+- [ ] Téléphone chargé + notifications on
+
+### H0 : Go Live
+- [ ] Vérifier trafic sur landing
+- [ ] Premier achat réel surveillé
+- [ ] Confirmer tunnel complet fonctionnel
+
+### H+1 : Stabilisation
+- [ ] Analyser logs pour erreurs
+- [ ] Répondre premiers tickets support
+- [ ] Vérifier métriques conversion
+
+### H+4 : Bilan court terme
+- [ ] Nombre d'achats vs objectif
+- [ ] Incidents rencontrés
+- [ ] Ajustements urgents identifiés
+
+### H+24 : Bilan J+1
+- [ ] Churn immédiat (remboursements)
+- [ ] Feedback early adopters
+- [ ] Bugs critiques restants
+- [ ] Décision : scale up communication ou stabiliser
+```
 
 ---
 
@@ -2756,6 +4079,276 @@ Ces indicateurs prédisent le succès avant les métriques business :
 | **Documentation Sync** | PRDs/Architectures à jour vs code | < 1 semaine de retard |
 | **Transmission Efficacy** | Latence inbox → action implémentée | < 48h pour critiques |
 | **Fail-Closed Compliance** | % systèmes qui HALT on failure | 100% (Proxy, Clean Pipe, Auth) |
+
+---
+
+### Interview Protocol — Validation Product-Market Fit (M3)
+
+*Document cross-projet : Guide pour les 10 interviews de validation à M3*
+
+#### Objectif
+
+> **Les chiffres mentent, les conversations révèlent.**
+>
+> 100 utilisateurs à M3 ne prouve rien statistiquement. Les 10 interviews approfondies sont la vraie validation du product-market fit.
+
+#### Timing
+
+| Milestone | Action |
+|-----------|--------|
+| **M2.5** | Identifier et contacter les candidats |
+| **M3** | Conduire les 10 interviews |
+| **M3 + 1 semaine** | Analyse et décision go/no-go M6 |
+
+---
+
+#### Profils à Interviewer
+
+**Répartition cible (10 interviews) :**
+
+| Profil | Nombre | Persona Représenté | Critère de Sélection |
+|--------|--------|-------------------|----------------------|
+| **Parents actifs** | 4 | Christophe, Marie-Bénédicte | Utilisent Clean Pipe, enfants à la maison |
+| **Privacy-focused** | 2 | Sophie, Robert-lite | Mode Fantôme ou paiement crypto |
+| **Mainstream** | 2 | Jean-Marc | Découverte via pub, pas communauté |
+| **Churned** | 2 | David (Déçu) | Ont annulé dans les 30 premiers jours |
+
+**⚠️ Les 2 interviews "churned" sont CRITIQUES** — comprendre pourquoi ils sont partis vaut plus que 10 témoignages positifs.
+
+---
+
+#### Recrutement des Candidats
+
+**Méthode Managed Path (email connu) :**
+
+```
+Objet : Aidez-nous à améliorer Tuttle (15 min, cadeau)
+
+Bonjour,
+
+Vous utilisez Tuttle depuis [durée]. Votre avis compte énormément.
+
+Accepteriez-vous un appel de 15 minutes pour partager votre expérience ?
+Pas de commercial, juste comprendre ce qui marche et ce qui pourrait être mieux.
+
+En remerciement : 1 mois offert sur votre abonnement.
+
+[Lien Calendly]
+
+Quentin
+Fondateur, Tuttle
+```
+
+**Méthode Sovereign Path (email inconnu) :**
+- Message dans l'app au renouvellement
+- Formulaire optionnel post-achat avec case "OK pour être contacté"
+- Incitation : mois gratuit si réponse
+
+**Méthode Churned :**
+- Email automatique à J+7 après annulation
+- Ton : "On veut comprendre, pas vous reconquérir"
+
+---
+
+#### Structure de l'Interview (15-20 min)
+
+**Phase 1 : Contexte (3 min)**
+
+| Question | Ce qu'on cherche |
+|----------|------------------|
+| "Comment avez-vous découvert Tuttle ?" | Canal d'acquisition réel |
+| "Qu'est-ce qui vous a décidé à essayer ?" | Déclencheur d'achat |
+| "Vous utilisez Tuttle pour... ?" | Usage réel vs usage prévu |
+
+**Phase 2 : Expérience (7 min)**
+
+| Question | Ce qu'on cherche |
+|----------|------------------|
+| "Qu'est-ce qui marche vraiment bien ?" | Points forts perçus |
+| "Qu'est-ce qui vous frustre ou manque ?" | Frictions réelles |
+| "Le Clean Pipe, vous l'utilisez ? Comment ?" | Adoption feature clé |
+| "Avez-vous eu besoin du support ? Comment c'était ?" | Qualité SAV |
+
+**Phase 3 : Fidélité (5 min)**
+
+| Question | Ce qu'on cherche |
+|----------|------------------|
+| "Qu'est-ce qui vous ferait partir ?" | Risques de churn |
+| "À qui en avez-vous parlé ?" | Bouche-à-oreille réel |
+| "Recommanderiez-vous Tuttle ? À qui ?" | NPS qualitatif |
+| "Si Tuttle disparaissait demain, qu'utiliseriez-vous ?" | Alternatives perçues |
+
+**Phase 4 : Churned uniquement (5 min)**
+
+| Question | Ce qu'on cherche |
+|----------|------------------|
+| "Qu'est-ce qui vous a fait partir ?" | Cause réelle (pas l'excuse) |
+| "Qu'est-ce qu'on aurait pu faire pour vous garder ?" | Action concrète |
+| "Qu'utilisez-vous maintenant ?" | Concurrent réel |
+| "Reviendriez-vous si [X] ?" | Condition de retour |
+
+---
+
+#### Questions Interdites
+
+| ❌ Ne jamais demander | Pourquoi |
+|----------------------|----------|
+| "Vous aimez Tuttle ?" | Question fermée, réponse sociale |
+| "Notre prix est correct ?" | Biais de confirmation |
+| "Quelle feature voulez-vous ?" | Feature request ≠ validation |
+| "Seriez-vous prêt à payer plus ?" | Hypothétique, sans valeur |
+
+---
+
+#### Grille d'Analyse
+
+**Après chaque interview, noter :**
+
+```markdown
+## Interview #[X] — [Date]
+
+**Profil :** [Parent/Privacy/Mainstream/Churned]
+**Durée client :** [X] mois
+**Canal découverte :** [Pub/Communauté/Bouche-à-oreille/Autre]
+
+### Points positifs mentionnés
+- [Point 1]
+- [Point 2]
+
+### Frictions / Problèmes
+- [Friction 1]
+- [Friction 2]
+
+### Verbatim clé
+> "[Citation marquante]"
+
+### Clean Pipe
+- Utilisé : Oui/Non
+- Satisfaction : [1-5]
+- Usage : [Famille/Perso/Pas configuré]
+
+### Recommandation
+- A recommandé : Oui/Non
+- À qui : [Profil]
+- Reviendrait si : [Condition]
+
+### Signal PMF (1-5)
+[1 = va partir, 5 = évangéliste]
+```
+
+---
+
+#### Synthèse des 10 Interviews
+
+**Tableau récapitulatif :**
+
+| # | Profil | Signal PMF | Friction #1 | Recommande ? |
+|---|--------|------------|-------------|--------------|
+| 1 | Parent | ? | ? | ? |
+| 2 | Parent | ? | ? | ? |
+| 3 | Parent | ? | ? | ? |
+| 4 | Parent | ? | ? | ? |
+| 5 | Privacy | ? | ? | ? |
+| 6 | Privacy | ? | ? | ? |
+| 7 | Mainstream | ? | ? | ? |
+| 8 | Mainstream | ? | ? | ? |
+| 9 | Churned | ? | ? | ? |
+| 10 | Churned | ? | ? | ? |
+
+**Métriques agrégées :**
+
+| Métrique | Calcul | Seuil Alerte |
+|----------|--------|--------------|
+| **Signal PMF moyen** | Moyenne des 10 scores | < 3.5 = problème |
+| **% Recommandeurs** | Interviews avec recommandation active | < 50% = problème |
+| **Friction #1 récurrente** | Friction citée ≥ 3 fois | Action immédiate requise |
+| **Clean Pipe Adoption** | % qui l'utilisent activement | < 60% chez Parents = problème |
+
+---
+
+#### Décision Go/No-Go M6
+
+**🟢 GO — Continuer comme prévu :**
+
+| Critère | Seuil |
+|---------|-------|
+| Signal PMF moyen | ≥ 3.5/5 |
+| % Recommandeurs | ≥ 60% |
+| Pas de friction bloquante récurrente | ≤ 2 mentions |
+| Churned : causes actionnables | Oui |
+
+**🟡 PIVOT — Ajuster avant M6 :**
+
+| Critère | Seuil |
+|---------|-------|
+| Signal PMF moyen | 2.5-3.5 |
+| Friction #1 claire et actionnable | Identifiée |
+| % Recommandeurs | 40-60% |
+
+**Actions :**
+- Prioriser fix friction #1
+- Réduire objectif M6 (500 → 300)
+- Nouvelle série interviews M4.5
+
+**🔴 STOP — Réévaluation profonde :**
+
+| Critère | Seuil |
+|---------|-------|
+| Signal PMF moyen | < 2.5 |
+| % Recommandeurs | < 40% |
+| Churned : causes non actionnables | "Je n'ai pas besoin de ça" |
+
+**Actions :**
+- Pause acquisition payante
+- Workshop repositionnement
+- Potentiel pivot produit
+
+---
+
+#### Verbatims à Collecter
+
+**Objectif : 3-5 citations utilisables**
+
+| Usage | Type de Verbatim |
+|-------|------------------|
+| **Témoignage site** | "Depuis que j'ai Tuttle, je..." |
+| **Pitch deck** | "Ce qui m'a convaincu c'est..." |
+| **Contenu marketing** | "Avant Tuttle, je..." |
+| **Amélioration produit** | "J'aimerais que..." |
+
+**Demander permission :**
+> "Cette phrase résume bien votre expérience. Peut-on l'utiliser (anonymement) sur notre site ?"
+
+---
+
+#### Template Email Post-Interview
+
+```
+Objet : Merci pour votre temps !
+
+Bonjour [Prénom],
+
+Merci pour ces [X] minutes. Votre retour est précieux.
+
+Comme promis, votre mois gratuit a été crédité.
+
+Si d'autres idées vous viennent, n'hésitez pas à répondre à cet email.
+
+À bientôt sur Tuttle,
+Quentin
+```
+
+---
+
+#### Checklist Interview Protocol
+
+| Élément | Statut | Responsable |
+|---------|--------|-------------|
+| Template email recrutement rédigé | ❌ À faire | tuttle-store |
+| Calendly configuré | ❌ À faire | Founder |
+| Grille d'analyse créée | ✅ Dans ce doc | - |
+| Incentive (mois gratuit) automatisable | ❌ À faire | tuttle-provisioner |
+| Liste candidats potentiels (M2.5) | ❌ À faire | Founder |
 
 ---
 
