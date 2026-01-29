@@ -77,10 +77,35 @@ workflow_status:
   # ═══════════════════════════════════════════════════════════════
   phase_2_planning:
     prd:
-      status: "required"
+      status: "in_progress"
+      file: "prd.md"
+      started_at: "2026-01-29"
       agent: "pm"
       command: "/bmad:bmm:workflows:prd"
+      mode: "create"
       output: "Product Requirements Document with FRs and NFRs"
+      current_step: "step-02-discovery"
+      current_substep: "advanced-elicitation"
+      resume_instructions: |
+        Lancer: /bmad:bmm:workflows:prd
+        Le PRD existe déjà → mode Edit ou continuer Create.
+        État actuel: Step 2 Discovery, Advanced Elicitation en cours.
+        5/5 méthodes originales complétées (First Principles, Pre-mortem, ADR, War Room, FMA).
+        Reshuffle proposé avec 5 nouvelles méthodes (Red Team, User Persona, Challenge, Reverse Engineering, Socratic).
+        L'utilisateur peut choisir [1-5] pour une méthode, [r] reshuffle, ou [x] pour passer à Step 3 (Product Vision).
+      completed_steps:
+        - step: "step-01-init"
+          note: "PRD créé, 1 input (Product Brief)"
+        - step: "step-02-discovery (partial)"
+          note: "Classification complétée + Party Mode (2 rounds) + Advanced Elicitation (5/5)"
+      enrichments_applied:
+        - "Party Mode Round 1: platform_orchestrator, sovereign_infrastructure, family_protection, invisible_complexity"
+        - "Party Mode Round 2: Scope 7 projets V1, DAG dépendances, transmissions critiques par sprint"
+        - "ADR: 10 Architecture Decision Records (ADR-001 à ADR-010)"
+        - "War Room: 6 décisions (WR-001 à WR-006) + flux transmission 8 étapes"
+        - "Failure Mode Analysis: 6 FM + 5 NFR-RESILIENCE + matrice priorité P0/P1/P2"
+        - "Pre-mortem: 5 scénarios + 5 NFR-PM"
+        - "First Principles: 6 vérités fondamentales + 1 principe design + 5 NFR-FP"
 
     ux_design:
       status: "conditional"
@@ -132,7 +157,13 @@ next:
   workflow: "prd"
   agent: "pm"
   command: "/bmad:bmm:workflows:prd"
-  reason: "Create detailed Product Requirements Document based on completed Product Brief"
+  reason: "Continuer PRD Step 2 Discovery (Advanced Elicitation) puis Step 3 Product Vision"
+  resume: |
+    1. Lancer /bmad:bmm:workflows:prd
+    2. Le PRD prd.md existe → reprendre Step 2 Discovery
+    3. Advanced Elicitation: 5/5 méthodes originales complétées
+    4. Reshuffle actif: 5 nouvelles méthodes proposées (Red Team, User Persona, Challenge, Reverse Engineering, Socratic)
+    5. Choix: [1-5] lancer méthode, [r] reshuffle, [x] terminer → Step 3 Product Vision
   alternatives:
     - workflow: "create-ux-design"
       agent: "ux-designer"
