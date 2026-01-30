@@ -2,6 +2,7 @@
 stepsCompleted:
   - step-01-init
   - step-02-discovery
+  - step-03-success
 inputDocuments:
   - product-brief-tuttle-master-2026-01-27.md
 workflowType: 'prd'
@@ -269,10 +270,293 @@ firstPrinciplesAnalysis:
     - id: NFR-FP-005
       requirement: "Le master DOIT fonctionner comme système de gouvernance même sans code exécutable dans son repo"
       tracesTo: FP-001
+step03PartyModeInsights:
+  rounds: 4
+  totalProposalsAccepted: 51
+  round1:
+    focus: "Core success criteria review"
+    proposals: 12
+    highlights:
+      - "Clone résilient avec fallback GitHub"
+      - "Automatisation mesurée en % vs heures"
+      - "Validation intégrité hierarchy.csv en CI"
+      - "Health check hebdo vert/orange/rouge"
+      - "Stratification critères par sprint gate (S0/S1/S2)"
+  round2:
+    focus: "Standards et infrastructure gaps"
+    proposals: 13
+    highlights:
+      - "Infisical secrets management isolé par projet"
+      - "Matrice environnements cross-projets"
+      - "Template CI commun"
+      - "Standards observabilité (Prometheus/Grafana)"
+      - "Design system + accessibilité"
+      - "Glossaire unifié (WR-004)"
+      - "Runbook opérationnel testable par un tiers"
+  round3:
+    focus: "Security, compliance, DX"
+    proposals: 12
+    highlights:
+      - "Supply chain security (scan + SBOM)"
+      - "Privacy by Design CI check"
+      - "Disaster Recovery RPO<24h RTO<4h"
+      - "Network security mTLS / Network Policies"
+      - "Feature flags cross-projets"
+      - "Conformité légale multi-juridictionnelle"
+      - "Accessibilité WCAG 2.1 AA"
+  round4:
+    focus: "PKI, signatures, chain of trust"
+    proposals: 14
+    userInput: "step-ca avec backend HSM load-balancé, tout doit être tracé, vérifié et signé"
+    highlights:
+      - "Hiérarchie PKI: Root CA (HSM offline) → step-ca (HSM LB) → Leaf certs"
+      - "Git commit signing obligatoire (dev + agents BMAD)"
+      - "Release signing: binaires, containers (cosign), packages"
+      - "CI vérifie signatures + signe artefacts"
+      - "Audit trail cryptographique non modifiable"
+      - "Warrant canary signé Root CA"
+      - "SBOM signé par release"
+      - "Stratification PKI sur 3 sprints"
 ---
 
 # Product Requirements Document - tuttle-master
 
 **Author:** Quentin
 **Date:** 2026-01-29
+
+## Success Criteria
+
+### User Success
+
+The primary user of tuttle-master is the ecosystem operator (Quentin) and BMAD agents. Success is measured by how effectively the conductor orchestrates the entire ecosystem via the `@quentin/bmad-multi-project` module.
+
+**Operator Success Metrics:**
+
+| Metric | Target | Measurement |
+|--------|--------|-------------|
+| **Orchestration Clarity** | Any BMAD agent can determine its next action from master context alone | Agent resolves dependencies, reads transmissions, and executes workflows without operator intervention |
+| **Transmission Turnaround** | Critical transmissions processed < 48h, standard < 7 days | Mailbox timestamps inbox → archive |
+| **Context Switching Cost** | Operator switches between projects with zero context loss | All project state captured in living documents (PRD, Architecture, Epics, Sprint Status) accessible via `/bmad:bmm:workflows:workflow-status` per project and `/bmad:multiproject:workflows:ecosystem-status` for global view |
+| **New Project Onboarding** | New child project fully operational in mailbox system after running `/bmad:multiproject:workflows:init-multi-project` | `npx bmad-method@alpha install` + `npx @quentin/bmad-multi-project@latest` + `_bmad/`, `_mailbox/`, `hierarchy.csv` created, git submodule added with Gitea remote + GitHub backup. Binary criterion: project sends and receives transmissions |
+| **Single Source of Truth** | Zero conflicting specs across projects | `hierarchy.csv` master = source of truth, validated syntactically and semantically in CI on every push. Contract tests validate PRD ↔ implementation alignment on every merge |
+| **Enforced Isolation** | Zero direct cross-project writes | All communication via mailbox system (outbox → inbox). Pre-commit hook verifies no modified file is outside `{project-root}` of current repo |
+| **Dashboard Readability** | Identify most critical project and next action in < 10 seconds of reading | `/ecosystem-status` displays prioritized hierarchical view with alerts sorted by severity |
+| **Contract Discoverability** | Quentin sees at a glance which contracts exist between which projects | Visual dependency graph (Excalidraw) maintained up to date, linked from ecosystem-status |
+
+**Emotional Success — The "Conductor's Confidence":**
+- Quentin never wonders "what's the current state of project X?" — `/ecosystem-status` answers instantly
+- No project drifts silently — the escalation system notifies master if a transmission stays `pending` > 7 days or `critical` > 24h
+- No agent guesses — every decision is traceable to an ADR, PRD section, or transmission archived in `_mailbox/archive/`
+- Every hierarchy node is a complete, sovereign BMAD project — no empty "containers"
+
+**Weekly Health Check — Confidence Pulse:**
+
+| Signal | Condition | State |
+|--------|-----------|-------|
+| 🟢 Green | Zero 🔴 alerts + inbox < 5 transmissions per project + zero stale transmissions | Healthy ecosystem |
+| 🟠 Orange | 1-2 🟡 alerts OR inbox 5-10 transmissions on a project OR 1 transmission > 48h | Attention required |
+| 🔴 Red | Active 🔴 alert OR inbox > 10 transmissions OR critical transmission > 24h unhandled | Immediate intervention |
+
+### Business Success
+
+tuttle-master does not generate revenue directly. Its business success is the health of the ecosystem it orchestrates — all projects playing the same BMAD score with the bmad-multiproject module.
+
+| Dimension | Success Indicator | Failure Signal |
+|-----------|-------------------|----------------|
+| **Coordination Efficiency** | Smooth mailbox exchanges: auto-triage (info→archive, bug→create story, dependency→backlog), critical transmissions processed < 48h, zero stale > escalation | Transmissions pile up in inbox, auto-triage fails, projects diverge |
+| **Living Coordination** | Mean time between API change in child and contract update in master < 48h | Time > 2 weeks = Ghost PRD (PM-001) |
+| **Living Documentation** | PRDs, Architecture, Epics, Sprint Status continuously updated via correct-course workflows triggered by `architectural` transmissions | Stale documents, implementation diverges from specs, no transmissions when APIs change |
+| **Ecosystem Velocity** | Child projects work autonomously within master-defined contracts, each child has its own BMAD lifecycle | Projects blocked waiting for master, unclear interfaces, undocumented implicit dependencies |
+| **Unified Method** | All projects use `npx bmad-method@alpha install` + `npx @quentin/bmad-multi-project@latest`, same BMAD score, same multi-project module | Projects with ad-hoc processes, inconsistent BMAD structure, no mailbox |
+| **Governance as Code** | Every master output = verifiable contract (CI) or workflow trigger (transmission). CI hooks block merges without transmission if changes in `api/` or `contracts/` (FM-005) | Documents exist but nothing enforces them, breaking changes without transmission |
+| **Git Infrastructure** | Each child = git submodule with Gitea remote (tea CLI + MCP Gitea) + GitHub backup (gh CLI). Recursive clone with GitHub fallback if Gitea unavailable | Repos out of sync, broken submodules, no backup, clone fails if one remote is down |
+| **Operator Automation** | Percentage of automated vs manual master actions: M3 > 60%, M6 > 80%, M12 > 90% | Operator does everything manually, triage not automated, escalations undetected |
+
+**Ecosystem Business Milestones:**
+
+| Phase | Objective | Master's Role |
+|-------|-----------|---------------|
+| **M0 Pre-launch** | Beta validated, 10 early adopters | 7 V1 projects initialized via `/init-multi-project`, hierarchy.csv complete, critical contracts defined, mailbox functional |
+| **M3 Validation** | 100 active subscribers | Smooth transmissions between all projects, auto-triage operational, living PRDs, reliable ecosystem-status dashboard |
+| **M6 Scale** | 500 active subscribers, NPS > 30 | Governance scales without operator bottleneck, automatic escalation works, delegation to children activated |
+| **M12 Traction** | 1,500 active subscribers | Master operates semi-autonomously, growth not founder-dependent, operational runbook tested by third party |
+
+### Technical Success
+
+#### Criteria Stratified by Sprint Gate
+
+**Sprint 0 Gate (Foundation):**
+
+| Criterion | Measure | Validation |
+|-----------|---------|------------|
+| **Hierarchy Initialized** | `hierarchy.csv` with 3+ projects (master + infra + libs minimum) | File exists and parsable |
+| **Resilient Recursive Clone** | `git clone --recurse-submodules` with GitHub fallback if Gitea unavailable | Test primary checkout + fallback |
+| **Dual Remote Configured** | Each project has Gitea remote (tea CLI + MCP Gitea) + GitHub remote (gh CLI) | `git remote -v` on each child |
+| **Mailbox Initialized** | `_mailbox/` with inbox/outbox/sent/archive + `.mailbox-config.yaml` on each project | Structure checklist |
+| **Complete BMAD Structure** | `npx bmad-method@alpha install` + `npx @quentin/bmad-multi-project@latest` executed on infra + libs | Checklist |
+| **CI Submodule Health** | CI action validates complete clone on every push to main | Green pipeline |
+| **hierarchy.csv CI Validation** | Syntactic (CSV parsable) + semantic (no DAG cycles, valid parent_ids, existing paths) validation on every push | CI check |
+| **Unified Git Policy** | Branching strategy defined and applied identically across all projects. `main` (and `develop` if git flow) protected on Gitea AND GitHub: merge only via PR, review required | Gitea + GitHub config verified |
+| **Branch Naming Convention** | Consistent cross-project naming (e.g., `feat/`, `fix/`, `chore/`, `hotfix/`) | Linter or CI check |
+| **Submodule Sync Policy** | Explicit rule: when parent updates child submodule ref (on every main merge? on every release tag?) | Document in master |
+| **Release/Tagging Policy** | SemVer versioning convention + consistent release process across projects + signed tags | Document + CI check |
+| **PR/Review Policy** | Number of approvals, mandatory CI checks before merge, unified PR template | Gitea branch protection rules |
+| **Unified Secrets Policy — Infisical** | Infisical as centralized secret manager. Each project has isolated Infisical environment (namespace per project). Secret names isolated per project — no implicit name sharing. Local `.env` with fake data for dev, Infisical injects real secrets in staging/prod. Zero cleartext secrets in any repo | Infisical config + CI scan (detect-secrets or equivalent) |
+| **Cross-Project Environment Matrix** | 3 environments (dev, staging, prod) consistent cross-projects: dev↔dev, staging↔staging, prod↔prod. Master defines which instance of each project communicates with which instance of others. Infisical provides secrets per environment | Matrix document + Infisical per-env config |
+| **Common CI Template** | Mandatory CI pipeline defined by master: lint → unit test → integration test → build → deploy staging. Each project adapts but respects mandatory stages | Template in master, validated by review |
+| **Ecosystem Getting Started** | Master README with: recursive clone, local Infisical setup (`.env` fake data), launch of dependent components. Developer can have functional env for their project | Onboarding test |
+| **Documentation Standards** | Mandatory structure per project: README.md, CONTRIBUTING.md, API docs (if applicable), changelog. CommonMark format, structure defined by master | CI documentation lint |
+| **Unified Glossary (WR-004)** | Technical and user-facing terms glossary maintained in master + tuttle-libs, reference for all projects | Review + usage verified |
+| **Supply Chain Security** | Automated dependency scanning in CI on every project (Trivy, Snyk or equivalent). SBOM generated per release. Zero critical vulnerability untreated > 7 days | CI scan + SBOM verified |
+| **Ecosystem Disaster Recovery** | Each critical infrastructure component (Gitea, Infisical, K8s, PostgreSQL) has documented and tested recovery procedure. RPO < 24h, RTO < 4h for critical components | Recovery test |
+| **Cross-Project Code Review for tuttle-libs** | Changes to tuttle-libs impacting public API require review from at least one consumer project | Gitea review rules config |
+| **PKI Hierarchy Deployed** | Root CA offline (dedicated HSM, 5-10 year rotation) → Intermediate CA (step-ca, load-balanced HSM backend) → Leaf certificates per project/service/env. PKI policy documented by master | step-ca operational + doc |
+| **Mandatory Git Commit Signing** | All projects: signed commits (GPG or SSH signing via step-ca). Gitea and GitHub reject unsigned commits on protected branches | Gitea/GitHub config verified |
+| **Developer Signing Key Provisioning** | Automatic provisioning via step-ca in one command. Documented in getting started | Onboarding test |
+| **BMAD Agent Cryptographic Identity** | Each BMAD agent has identity provisioned by step-ca. Agent commits signed and traceable to agent + session | Agent commit verified |
+
+**Sprint 1 Gate (Core Product):**
+
+| Criterion | Measure | Validation |
+|-----------|---------|------------|
+| **Active Transmissions** | Mailbox exchanges between 5+ projects (master, infra, libs, store, vpn, provisioner) | Transmissions sent and received in each inbox |
+| **V1 Critical Contracts** | Store→Provisioner and Provisioner→VPN interfaces documented and enforced | Review + contract tests |
+| **Auto-Triage Operational** | All 8 auto-handled types functional without intervention | Test each type |
+| **Malformed Transmission Handling** | Transmissions with unknown type or malformed YAML handled gracefully with logging, no crash | Edge case tests |
+| **Escalation Functional** | `pending` > 7d → master notification + `stale` tag. `critical` > 24h → auto escalation | Timeout tests |
+| **Stale Transmission Alert** | Script detects outbox transmissions > 24h and alerts | Alert test |
+| **CI Hook on API Changes** | Merge blocked without transmission if changes in `api/` or `contracts/` (FM-005) | Test blocked merge |
+| **Pre-Commit Isolation Hook** | Verifies no modified file is outside `{project-root}` of current repo | Test cross-project write blocked |
+| **Version Compatibility Matrix** | Inter-project version pinning mechanism. Each project pins specific tuttle-libs version and dependent service versions. No implicit `latest`. tuttle-libs breaking change = explicit `dependency` transmission | Config verified + transmission sent |
+| **Cross-Project Integration Tests** | Each cross-project interface (Store→Provisioner, Provisioner→VPN) has automated integration test in CI on staging environment. Contract tests verify format, integration tests verify behavior | CI staging green |
+| **Observability Standards** | Unified log format (structured JSON), metrics exported by each project (Prometheus), cross-project Grafana dashboards, centralized alerting for critical interfaces | Dashboard + alerts functional |
+| **Design System + UX Enforced** | All user-facing projects (store, apps) implement tuttle-libs/ui design system and UX patterns defined by master. Consistent cross-project user error glossary | UX review |
+| **Privacy by Design** | CI check that no project logs identifiable user data (PII). Regex scan on logging patterns. Zero PII detected | CI scan green |
+| **Independent Rollback** | Each project can rollback independently without breaking cross-project interfaces. Version compatibility matrix identifies retro-compatible versions | Rollback test + matrix |
+| **DB Migrations** | Versioned, reversible schema migrations, executed automatically on deploy. No destructive migration without verified prior backup | CI migration test |
+| **Inter-Service Network Security** | Inter-service communication only via mTLS or K8s private network (Network Policies). No service publicly exposed except store frontend and VPN endpoints | Network policy audit |
+| **API/Feature Deprecation Process** | Any API/feature deprecation impacting another project triggers `architectural` transmission with minimum 2-sprint migration delay. Master maintains active deprecated APIs registry | Registry + transmissions verified |
+| **Cross-Project Feature Flags** | Feature flag strategy for cross-project features. MVP: config file propagated via transmission. Post-MVP: dedicated service. Flag activated in master → transmission to affected projects | Config + transmission |
+| **Accessibility WCAG 2.1 AA** | WCAG 2.1 AA minimum standards for all user-facing projects. Automated accessibility tests in CI (axe-core or equivalent) | CI axe-core green |
+| **Multi-Jurisdictional Legal Compliance** | Compliance matrix per jurisdiction (GDPR, ePrivacy, local VPN laws). Each user-facing project integrates legal obligations for target jurisdiction. Master maintains covered jurisdictions list and requirements | Legal matrix document |
+| **mTLS Inter-Services via step-ca** | All inter-service communication uses mTLS with certificates issued by step-ca. Automatic provisioning (ACME), not manual | mTLS connection test |
+| **Release Signing** | Every release artifact signed cryptographically: binaries (project key), containers (cosign/Notary v2), packages (platform-native signing). Signing keys stored in HSM | Signature verified |
+| **CI Verifies + Signs** | CI pipeline verifies dependency signatures on input AND signs artifacts on output. Zero unsigned artifact passes to staging/prod | CI gate |
+| **Rotation + Revocation Policy** | Automated rotation: 90d service certificates, annual release keys, 5-10 years Root CA. Emergency revocation process tested. step-ca publishes CRL/OCSP | Rotation + revocation test |
+| **Local Signature Verification** | Verification command available for each artifact type (binary, container, package). Documented in getting started | Doc + test |
+
+**Sprint 2 Gate (Clients — Full Validation):**
+
+| Criterion | Measure | Validation |
+|-----------|---------|------------|
+| **9 Projects Initialized** | All with complete BMAD structure + mailbox + local hierarchy.csv | Structure checklist |
+| **Inbox Autonomy** | Any child project can `git pull` inbox and receive instructions offline | Offline transmission test |
+| **Hierarchy Sync** | All local `hierarchy.csv` files reflect actual state after each `hierarchy-update` | Validation script |
+| **No Local Infra Leakage** | No project except tuttle-infra contains Terraform/Ansible | Structure lint |
+| **Brownfield Migration** | tuttle-key has `_bmad/`, `_mailbox/`, `hierarchy.csv` | Migration checklist |
+| **Woodpecker Pipelines** | Every project has functional `.woodpecker.yml` | Green CI |
+| **Ecosystem-Status Operational** | Dashboard displays all projects with phase, progress, alerts, transmissions. Critical action identifiable in < 10s | Usability test |
+| **Visual Dependency Graph** | Excalidraw diagram of inter-project contracts maintained up to date | Review |
+| **Operational Runbook (PM-002)** | A third party can execute the runbook and resolve a simulated incident without Quentin's help. Covers: mailbox triage, escalation, transmission, ecosystem-status, recovery | External test |
+| **Cryptographic Audit Trail** | Complete history: certificate issuance, release signatures, signed commits. Logs stored, non-modifiable, queryable | Audit log verified |
+| **Public Release Verification** | Each release publishes signatures + checksums on verifiable page. Tuttle public keys accessible. Apps verify their own integrity on launch (self-integrity check) | Public verification test |
+| **Signed Warrant Canary** | Signed by Root CA, published at regular intervals, verifiable by anyone with public key | External verification test |
+| **Signed SBOM** | Signed SBOM published with each release. Technical user can verify: who compiled, which dependencies, which signature | SBOM + signature verified |
+
+### Measurable Outcomes
+
+| Outcome | Target | Timeframe |
+|---------|--------|-----------|
+| **Transmission Latency** | Inbox → integrated action < 48h for critical, < 7 days for standard | Continuous |
+| **Coordination Latency** | Child API change → master contract update < 48h | Continuous |
+| **Document Freshness** | PRD/Architecture ↔ implementation gap < 1 week | Continuous |
+| **Project Alignment** | 100% of child projects respect master-defined principles | Every sprint gate |
+| **Fail-Closed Compliance** | 100% of critical systems (Proxy, Clean Pipe, Auth) HALT on failure | Every release |
+| **Contract Test Coverage** | Every cross-project interface has automated validation | Sprint 1+ |
+| **Auto-Triage Rate** | M3 > 80%, M6 > 90%, M12 > 95% | Progressive |
+| **Operator Automation** | Automated vs manual actions: M3 > 60%, M6 > 80%, M12 > 90% | Progressive |
+| **Ecosystem-Status Health** | Zero persistent 🔴 critical alert > 3 days | Continuous |
+| **Weekly Health Check** | 🟢 green = zero 🔴 + inbox < 5 + zero stale | Weekly |
+| **Contract Challenge SLA** | When a child challenges a master contract via `architectural` transmission, master responds < 7 days | Continuous |
+| **Breaking Change Coordination** | Every user-facing change coordinated via master transmission → impacted projects, unified user message defined in glossary | Continuous |
+
+## Product Scope
+
+### MVP — Minimum Viable Product
+
+tuttle-master is an **orchestration project** that produces no executable code. Its MVP defines the vision, coordinates child projects, and establishes standards via the bmad-multiproject module.
+
+**What master DEFINES:**
+
+| Domain | Responsibility |
+|--------|----------------|
+| **Vision** | Mission, values, "State-Resistant" positioning |
+| **Concepts** | LightWeb, Legislative Weather, Îlots, Clean Pipe |
+| **Architecture** | Shared technical principles (Zero-Knowledge, RAM-only, etc.) |
+| **Hierarchy** | `hierarchy.csv` — child project structure, dependencies, roadmap DAG. CI-validated (syntax + semantics + cycles) |
+| **Standards** | Conventions, security, UX, documentation |
+| **Governance** | Ethical rules, Consensus de Nettoyage, isolation rules (enforced by pre-commit hook) |
+| **Contracts** | Cross-project interface specifications (Store→Provisioner, Provisioner→VPN) + visual Excalidraw graph |
+| **Transmissions** | Mailbox system (`_mailbox/`) with typed transmissions, auto-triage, and graceful error handling |
+| **Tooling** | `npx bmad-method@alpha install` + `npx @quentin/bmad-multi-project@latest` for each project |
+| **Git Policy** | Branching strategy, protected branches, naming conventions, PR/review policy, release tagging, submodule sync — uniformly applied via Gitea branch protection + GitHub mirror |
+| **Secrets Policy** | Infisical as centralized manager, namespace isolated per project, `.env` local with fake data for dev, secret injection per env (staging/prod), documented rotation |
+| **PKI Ecosystem** | Root CA → step-ca (load-balanced HSM backend) → Leaf certs hierarchy. Issuance, rotation, revocation policies. mTLS inter-services |
+| **Chain of Trust** | Mandatory git commit signing, release signing (binaries, containers, packages), CI verifies + signs, zero unsigned artifacts in staging/prod |
+| **Cryptographic Traceability** | Non-modifiable audit trail, signed SBOM, public verification, signed warrant canary, app self-integrity check |
+| **Cryptographic Identities** | Developers and BMAD agents provisioned via step-ca, release keys in HSM |
+| **Supply Chain Security** | CI dependency scanning, SBOM per release, zero critical vulnerability > 7 days policy |
+| **Privacy by Design** | Zero-Knowledge, RAM-only standards, zero PII in logs — CI-validated |
+| **Disaster Recovery** | DR plan for Gitea, Infisical, K8s, PostgreSQL — RPO < 24h, RTO < 4h |
+| **Network Security** | mTLS inter-services, K8s Network Policies, minimal public surface |
+| **Observability** | Log standards (structured JSON), metrics (Prometheus), dashboards (Grafana), centralized alerting |
+| **CI/CD Standards** | Common pipeline template (lint→test→build→deploy), adapted per project, mandatory stages |
+| **Documentation Standards** | Per-project structure (README, CONTRIBUTING, API docs, changelog), unified glossary (WR-004) |
+| **UX Standards** | tuttle-libs/ui design system, interaction patterns, user error glossary |
+| **Accessibility** | WCAG 2.1 AA, automated CI tests |
+| **Legal Compliance** | Jurisdiction compliance matrix, GDPR, ePrivacy, local VPN laws |
+| **Feature Flags** | Cross-project feature flag strategy, propagation via transmission |
+
+**What master DOES NOT do:**
+- No implementation code
+- No direct infrastructure
+- No service deployment
+- No writes to child projects (except init + deprecated.md)
+
+**Required Git Infrastructure per Child:**
+- Primary remote: Gitea (tea CLI configured + MCP Gitea)
+- Backup remote: GitHub (gh CLI configured)
+- Git submodule of parent project
+- Complete BMAD structure + mailbox
+- Clone fallback: if Gitea unavailable, GitHub takes over
+
+**MVP Sprint Roadmap:**
+
+| Sprint | Projects | Master Gate |
+|--------|----------|-------------|
+| **Sprint 0: Foundation** | tuttle-infra, tuttle-libs | 26 S0 criteria validated: hierarchy, clone, dual remote, mailbox, BMAD, CI, hierarchy validation, git policy, secrets (Infisical), env matrix, CI template, getting started, docs, glossary, supply chain, DR, cross-lib review, PKI hierarchy, commit signing, dev key provisioning, BMAD agent identity |
+| **Sprint 1: Core Product** | tuttle-store, tuttle-vpn, tuttle-provisioner | 25 S1 criteria validated: transmissions, contracts, triage, edge cases, escalation, alerts, CI hooks, isolation, version pinning, integration tests, observability, design system, privacy, rollback, migrations, network security, deprecation process, feature flags, accessibility, legal compliance, mTLS, release signing, CI verify+sign, rotation/revocation, local verification |
+| **Sprint 2: Clients** | tuttle-apps/android, tuttle-apps/windows | 13 S2 criteria validated: 9 projects, inbox autonomy, hierarchy sync, infra lint, brownfield, pipelines, ecosystem-status, dependency graph, runbook, audit trail, public verification, warrant canary, signed SBOM |
+
+### Growth Features (Post-MVP)
+
+| Feature | Rationale | Timeline |
+|---------|-----------|----------|
+| **Formal API Contracts (OpenAPI)** | Emerge via field transmissions once services exist | When services stabilize |
+| **Community Governance** | After traction | M12+ |
+| **Multi-Payment Processors** | BTCPay sufficient for MVP | Post-V1 |
+| **Automated PRD Drift Detection** | CI-driven PRD ↔ implementation divergence alerts | Post-V1 |
+| **Referent System** | Organic growth via trusted community members | V1.5 |
+| **tuttle-hardware (tuttle-box)** | Physical device orchestration | V1.5 |
+| **Advanced Delegation** | Automatic transmission routing to children based on tags | Post-V1 |
+
+### Vision (Future)
+
+| Feature | Rationale | Timeline |
+|---------|-----------|----------|
+| **tuttle-network (LightWeb Dashboard)** | V2 — decentralized content delivery | V2 |
+| **tuttle-proxy (Shipping Anonymization)** | V2 — RAM-only shipping proxy | V2 |
+| **Dynamic Legislative Weather** | Scraper + AI complexity | V2 |
+| **Self-Healing Ecosystem** | Master detects and auto-corrects project drift without operator intervention | V2+ |
+| **Federated Tuttle Instances** | Multiple independent Tuttle ecosystems that can peer | V3 |
 

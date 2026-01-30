@@ -84,20 +84,21 @@ workflow_status:
       command: "/bmad:bmm:workflows:prd"
       mode: "create"
       output: "Product Requirements Document with FRs and NFRs"
-      current_step: "step-02-discovery"
-      current_substep: "advanced-elicitation"
+      current_step: "step-03-success"
+      current_substep: "completed-ready-for-step-04"
       resume_instructions: |
         Lancer: /bmad:bmm:workflows:prd
-        Le PRD existe déjà → mode Edit ou continuer Create.
-        État actuel: Step 2 Discovery, Advanced Elicitation en cours.
-        5/5 méthodes originales complétées (First Principles, Pre-mortem, ADR, War Room, FMA).
-        Reshuffle proposé avec 5 nouvelles méthodes (Red Team, User Persona, Challenge, Reverse Engineering, Socratic).
-        L'utilisateur peut choisir [1-5] pour une méthode, [r] reshuffle, ou [x] pour passer à Step 3 (Product Vision).
+        Le PRD existe déjà → mode Create, reprendre au Step 4 (User Journey Mapping).
+        Steps 1-3 complétés. Step 3 (Success Criteria) inclut 4 rounds Party Mode (51 propositions acceptées).
+        Sections écrites dans le PRD : Success Criteria (User/Business/Technical stratifié S0/S1/S2 + Measurable Outcomes) + Product Scope (MVP/Growth/Vision).
+        Prochaine action : charger step-04-journeys.md et exécuter.
       completed_steps:
         - step: "step-01-init"
           note: "PRD créé, 1 input (Product Brief)"
-        - step: "step-02-discovery (partial)"
+        - step: "step-02-discovery"
           note: "Classification complétée + Party Mode (2 rounds) + Advanced Elicitation (5/5)"
+        - step: "step-03-success"
+          note: "Success Criteria + Product Scope complets. 4 rounds Party Mode (51 propositions). Couvre: orchestration, mailbox, git policy, Infisical, PKI/step-ca/HSM, signatures, traçabilité, supply chain, privacy, DR, observabilité, CI/CD, UX, accessibilité, conformité légale."
       enrichments_applied:
         - "Party Mode Round 1: platform_orchestrator, sovereign_infrastructure, family_protection, invisible_complexity"
         - "Party Mode Round 2: Scope 7 projets V1, DAG dépendances, transmissions critiques par sprint"
@@ -106,6 +107,13 @@ workflow_status:
         - "Failure Mode Analysis: 6 FM + 5 NFR-RESILIENCE + matrice priorité P0/P1/P2"
         - "Pre-mortem: 5 scénarios + 5 NFR-PM"
         - "First Principles: 6 vérités fondamentales + 1 principe design + 5 NFR-FP"
+        - "Step 3 Party Mode R1: 12 propositions (clone résilient, automatisation %, health check, stratification sprint gates)"
+        - "Step 3 Party Mode R2: 13 propositions (Infisical, env matrix, CI template, observabilité, glossaire, runbook)"
+        - "Step 3 Party Mode R3: 12 propositions (supply chain, privacy, DR, network security, feature flags, WCAG, conformité)"
+        - "Step 3 Party Mode R4: 14 propositions (PKI step-ca/HSM, commit signing, release signing, audit trail, warrant canary, SBOM signé)"
+        - "User input: Infisical isolé par projet, .env fake data local/dev"
+        - "User input: step-ca backend HSM load-balancé, tout tracé/vérifié/signé"
+        - "User input: politique git cohérente écosystème (branches, PR, releases)"
 
     ux_design:
       status: "conditional"
@@ -157,13 +165,13 @@ next:
   workflow: "prd"
   agent: "pm"
   command: "/bmad:bmm:workflows:prd"
-  reason: "Continuer PRD Step 2 Discovery (Advanced Elicitation) puis Step 3 Product Vision"
+  reason: "Continuer PRD Step 4 User Journey Mapping (steps 1-3 complétés)"
   resume: |
     1. Lancer /bmad:bmm:workflows:prd
-    2. Le PRD prd.md existe → reprendre Step 2 Discovery
-    3. Advanced Elicitation: 5/5 méthodes originales complétées
-    4. Reshuffle actif: 5 nouvelles méthodes proposées (Red Team, User Persona, Challenge, Reverse Engineering, Socratic)
-    5. Choix: [1-5] lancer méthode, [r] reshuffle, [x] terminer → Step 3 Product Vision
+    2. Le PRD prd.md existe → mode Create, reprendre au Step 4
+    3. Steps complétés: step-01-init, step-02-discovery, step-03-success
+    4. Step 3 inclut Success Criteria + Product Scope (4 rounds Party Mode, 51 propositions)
+    5. Prochaine étape: step-04-journeys.md (User Journey Mapping)
   alternatives:
     - workflow: "create-ux-design"
       agent: "ux-designer"
