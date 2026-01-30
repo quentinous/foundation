@@ -3,13 +3,16 @@ stepsCompleted:
   - step-01-init
   - step-02-discovery
   - step-03-success
+  - step-04-journeys
+  - step-05-domain
 inputDocuments:
   - product-brief-tuttle-master-2026-01-27.md
+  - analysis/brainstorming-session-2026-01-30.md
 workflowType: 'prd'
 documentCounts:
   briefs: 1
   research: 0
-  brainstorming: 0
+  brainstorming: 1
   projectDocs: 0
 date: 2026-01-29
 author: Quentin
@@ -559,4 +562,369 @@ tuttle-master is an **orchestration project** that produces no executable code. 
 | **Dynamic Legislative Weather** | Scraper + AI complexity | V2 |
 | **Self-Healing Ecosystem** | Master detects and auto-corrects project drift without operator intervention | V2+ |
 | **Federated Tuttle Instances** | Multiple independent Tuttle ecosystems that can peer | V3 |
+
+## User Journeys
+
+tuttle-master is not a user-facing product. Its "users" are: the human operator (Quentin), BMAD agents (as first-class infrastructure citizens), child projects (as governed entities), future contributors, and external auditors. These 11 journeys cover normal operations, crisis response, agent lifecycle (success and failure), cross-project governance, onboarding, security verification, bootstrap, autonomous operation, and adversarial scenarios.
+
+**Enrichment source:** 4 rounds Party Mode (R1: edge cases + validation scenarios, R2: bootstrap + async + coverage rule + doc updates, R3: event-driven triggers + agent failure + user echoes, R4: adversarial security + scaling).
+
+### Journey 1 — Quentin, the Operator: "Morning of the Conductor"
+
+**Opening Scene:** 8:30 AM. Quentin opens his terminal. 9 projects run in parallel across the Tuttle ecosystem. Yesterday, a dev agent opened 3 PRs on tuttle-store, a CI pipeline failed on tuttle-vpn, and a `dependency` transmission arrived from tuttle-provisioner to tuttle-store. Before he even types a command, an automated morning digest (generated at 7:00 AM by the health-check bot, signed by its cert) summarizes: pending transmissions, PRs awaiting review, active alerts, health status.
+
+**Rising Action:** Quentin runs `/workflow-status`. Dashboard shows green everywhere except orange on tuttle-vpn (CI fail) and a pending transmission on tuttle-store. He identifies both attention points in under 10 seconds. He opens `git.pelerin.lan/tuttle/tuttle-master` — the ecosystem project board shows epics per project. Sprint 1 at 65%. He clicks `[vpn] Epic 1` — blocked by CI fail. He switches to `git.pelerin.lan/tuttle/tuttle-vpn`. PR #42 from the dev agent is red — mTLS test failing, staging cert expired. He checks step-ca: ACME endpoint misconfigured. He fixes the config, pushes direct (signed), CI relaunches automatically. Green. He then processes the pending transmission on tuttle-store via `/correct-course`, updates the interface contract, archives the transmission.
+
+**Climax:** In 45 minutes, Quentin has diagnosed a cert problem, fixed infrastructure, processed a cross-project transmission, and verified the ecosystem is green. Everything is traced: signed commit, agent PR relaunched, transmission archived as `integrated`, Gitea wiki synced.
+
+**Resolution:** The ecosystem runs. The weekly health check will be green. No project drifted silently — the governance system does its job.
+
+**Capabilities:** Ecosystem dashboard, morning digest (event-driven), transmission triage, CI monitoring, Teleport admin access, step-ca management, audit trail.
+
+### Journey 2 — BMAD Agent (bmad-dev): "The Robot's PR"
+
+**Opening Scene:** The bmad-dev agent has received its mission: implement story `[E2.S1] BTCPay integration` on tuttle-store. Its step-ca certificate (30-day, Tier 2 — Code) is valid. It has Git read + PR code access, K8s dev direct, and Infisical dev read.
+
+**Rising Action:** The agent analyzes the story (Gitea issue #14, milestone Epic 2). It reads acceptance criteria, task checklists, the interface contract from the master PRD. It codes. It accesses Infisical — namespace `tuttle-store`, environment `dev`. Secrets are fake data. It opens a PR on tuttle-store: `PR #47: [E2.S1] BTCPay payment webhook integration — Closes #14`. Commit signed by agent cert. CI starts. Worker gets a job-scoped ephemeral cert. Tests pass. CI signs the build artifact. Target branch is `dev` — CI green → auto-merge.
+
+The PR must go to staging. New PR `dev → staging`. Tea agent gets notified. Tea runs integration tests: requests staging access via Teleport — Access Request auto-approved (CI-triggered). Integration tests pass. Tea approves. Merge. Final step: PR `staging → main`. Notification to Quentin. He reviews code, verifies interface contract, checks tests green and SBOM clean. Merges. Issue #14 auto-closed. Milestone Epic 2 at 10%.
+
+**Edge Case — Merge Conflict:** Two agents work on tuttle-store simultaneously. Both modify `src/payments/handler.ts`. The second agent's PR shows a conflict. **Rule: the agent never resolves a merge conflict alone.** It adds label `conflict` to the PR and notifies the human. Quentin resolves manually (he has context of both changes), pushes the resolution (signed), and both PRs resume their cycle.
+
+**Capabilities:** Agent identity (step-ca Tier 2), PR escalation chain, Infisical namespace isolation, CI job-scoped certs, Teleport Access Request auto-CI, issue auto-close, merge conflict escalation to human.
+
+### Journey 3 — Child Project (tuttle-provisioner): "The Transmission That Changes a Contract"
+
+**Opening Scene:** While implementing VPN provisioning, the team realizes the master contract doesn't cover automatic subscription renewal. The contract specifies "create" and "cancel" but not "renew". The CI hook detects a change in `contracts/` and blocks the merge: *"Transmission required for API/contract changes (FM-005)"*.
+
+**Rising Action:** The agent creates a `dependency` transmission with priority `critical` to tuttle-store, tuttle-vpn, and CC to tuttle-master. Auto-triage classifies as `dependency` — requires processing. Quentin sees it in the master dashboard. SLA: 48h. He runs `/correct-course`. Impact analysis shows: Store needs a new billing endpoint, VPN needs a reactivation handler, Master contract needs updating.
+
+**Edge Case — Contradictory Transmissions:** tuttle-provisioner sends "need `renew_subscription` endpoint". Simultaneously, tuttle-store sends "removing `cancel_subscription`, replaced by `update_subscription_status`". Both impact the same contract. Auto-triage cannot resolve the contradiction. **Rule: when two transmissions impact the same contract, they are escalated to master with tag `conflict`.** Quentin opens both side by side, runs correct-course to unify both requests into a coherent new contract. Both transmissions archived with the same `resolution_id`.
+
+**Resolution:** 48h after gap detection, the contract is updated everywhere. Each project has a backlog issue. The transmission is archived as `integrated`. Contract tests are updated. Documentation update: the wiki master is synced automatically with the new contract. Child repo wikis (store, vpn) are also updated. The Glossary receives the new term `renew_subscription`.
+
+**Capabilities:** CI hook FM-005, mailbox system, correct-course workflow, cross-project contracts, Gitea auto-sync, living PRDs, transmission conflict escalation, documentation update as part of flow.
+
+### Journey 4 — Future Contributor: "First Day in the Ecosystem"
+
+**Opening Scene:** Léa is a developer joining Tuttle. Quentin has given her access to the master repo. She needs to understand the ecosystem and start contributing to tuttle-libs.
+
+**Rising Action:** Léa clones the master repo with `git clone --recurse-submodules`. GitHub fallback works (Gitea temporarily unavailable). She opens `git.pelerin.lan/tuttle/tuttle-master/wiki`. Instead of a wall of docs, she sees **"Getting Started in 5 Steps"**:
+
+1. **Understand the hierarchy** — Open Hierarchy.md, see the 9 projects and their links
+2. **Understand the mailbox** — Read an example of a real archived transmission
+3. **Make your first PR** — Modify a file in tuttle-libs, watch CI run, receive a review
+4. **Create your first transmission** — The CI hook will guide her when she touches `api/`
+5. **Read your sprint board** — Open the Gitea project board for her repo, see assigned issues
+
+At each step, Léa discovers a **safeguard** that reassures her: CI blocks before she breaks something, PR requires review, her step-ca cert limits her scope to dev environments. Her first day is not anxiety-inducing — the system is designed so errors cannot propagate.
+
+Quentin provisions her identity via step-ca. With Teleport, she gets ephemeral access to dev environments. Her cert has a 90-day TTL (human). She can push direct on dev branches of tuttle-libs (signed). Her first API change triggers the CI hook — she creates her first `architectural` transmission. The flow works.
+
+**Resolution:** Léa is operational. She understands the ecosystem through the Gitea wiki and runbook. Her identity is in the step-ca trust chain. Her commits are signed. She learned the transmission workflow through practice. Quentin didn't need to do a 3-hour oral onboarding — the system is self-documenting.
+
+**Capabilities:** Resilient clone (GitHub fallback), Getting Started guided onboarding, step-ca identity provisioning, Teleport ephemeral access, CI hook as teaching tool, self-documenting ecosystem, emotional safeguards.
+
+### Journey 5 — External Auditor: "Verifying the Chain of Trust"
+
+**Opening Scene:** An external security auditor must verify the integrity of the Tuttle ecosystem before V1 release. They have no infrastructure access — only public artifacts.
+
+**Rising Action:** The auditor starts with an **"Audit Checklist in 5 Steps"** from the master wiki: (1) verify warrant canary, (2) verify a release signature chain, (3) inspect Teleport audit trail, (4) verify human/agent separation in PRs, (5) test a cert revocation. Each step = a command, an expected result.
+
+They verify the warrant canary signature with the Root CA public key — valid, dated within 30 days. They check releases: each Gitea release carries a signed tag, signed SBOM, and signed artifacts (cosign for containers). Chain verified: artifact signed by CI worker → CI worker cert signed by step-ca → step-ca signed by Root CA.
+
+They analyze the cryptographic audit trail. Every commit is signed — they can distinguish human commits (Quentin's cert) from agent commits (bmad-dev, bmad-tea). PRs show the validation chain: agent proposes → tea validates → human merges.
+
+**Climax — Moment of Conviction:** The auditor doesn't just verify signatures. The convincing moment comes when they examine Teleport logs and discover that an agent attempted staging access **outside a CI pipeline** last week. The Access Request was automatically denied — no CI approval, no access. The agent couldn't bypass the system. This isn't a signature on a document — it's **living proof** that governance works in real-time, not just on paper.
+
+**Resolution:** Audit concludes: intact chain of trust, zero unsigned artifacts, complete human/agent/CI traceability, valid warrant canary. The auditor notes: "The PKI is not decorative — it actively enforces access policies."
+
+**Capabilities:** Public verification, crypto audit trail, chain of trust, PR traceability, zero unsigned artifacts, Getting Started guide (audit variant), living proof (denied access).
+
+### Journey 6 — Quentin, the Operator: "The Worst Day — Critical Production Incident"
+
+**Opening Scene:** 3:12 AM. Phone vibrates. Grafana alert: `tuttle-vpn: ALL ENDPOINTS DOWN — FAIL-CLOSED ACTIVE`. Users see "Maintenance in progress — your traffic is protected." Fail-closed worked: rather than passing traffic in cleartext, VPN cut everything. The alert automatically creates a Gitea issue in tuttle-master with label `incident-active`, pre-filled with: impacted service, timestamp, dashboard links, latest logs.
+
+**Rising Action:** Quentin opens his terminal. `tsh login` — Teleport delivers an ephemeral admin cert (TTL 4h). He accesses K8s prod. He's the only human authorized in prod — no agent, no bot. Logs show: `TLS handshake failed: certificate expired`. The mTLS cert between provisioner and vpn expired. step-ca's ACME renewal failed silently — endpoint pointed to an old hostname after infra migration. He fixes the config, forces cert renewal. Pods restart. VPN returns. Total downtime: 47 minutes.
+
+**Edge Case — Contradictory Transmissions During Incident:** tuttle-store sends "VPN down, suspending new subscriptions". tuttle-provisioner sends "VPN will be up in 30min, continue provisioning." Both are `critical`. Auto-triage escalates to master with tag `conflict`. Quentin resolves: "Suspend new subscriptions until stable recovery confirmed."
+
+**Echo — Christophe (FP-005):** During the 47 minutes of downtime, Christophe tries to connect to the VPN. He sees a sober screen: "Maintenance in progress — your connection is protected, we'll be back shortly." No jargon, no error code. He retries 1 hour later, it works. The next day, nothing in his notifications. He will never know the infrastructure failed at 3 AM. This is living proof of FP-005: *"Success is measured by the user's ignorance."*
+
+**Resolution:** The next day, the weekly health check has a new test: ACME endpoint verification per project. Rotation changes from 90 to 60 days for mTLS certs. The transmission is processed by each child project. Documentation update: Runbook enriched with new procedure "ACME endpoint verification post-migration". Wiki master synced automatically. The ephemeral Teleport cert has expired — zero residual access.
+
+**Capabilities:** Fail-closed pattern, auto-ticket (event-driven), Teleport prod access (human only, ephemeral, audited), step-ca forced renewal, post-mortem transmission, zero residual access, observability (Grafana), transmission conflict during incident, documentation update, user invisibility (FP-005).
+
+### Journey 7 — Controlled Evolution: "The Breaking Change That Breaks Nothing"
+
+**Opening Scene:** tuttle-libs v0.3.0 must change the API error response format. From `{ error: "message" }` to `{ error: { code: "ERR_001", message: "...", details: {} } }`. Breaking change impacting tuttle-store, tuttle-vpn, and tuttle-provisioner.
+
+**Rising Action:** The architect agent prepares migration. PR on tuttle-libs. CI lint detects change in `api/` and blocks: *"Transmission required (FM-005)"*. The agent creates an `architectural` transmission with tag `breaking` and a 2-sprint migration window. Feature flag `TUTTLE_LIBS_ERROR_V2` allows opt-in during transition. Auto-triage classifies as `architectural-breaking`. Gitea issues auto-created in each impacted repo with labels `blocked` + `breaking-change` + `migration`. Wiki master updated.
+
+At J-7 before deadline, the system automatically checks which projects haven't closed their migration issue. Those still open receive an automatic `reminder` transmission (priority `high`). At J-1 still open: priority escalates to `critical`, Quentin alerted.
+
+**Edge Case — Merge Conflict During Migration:** Two agents on tuttle-store work on migration simultaneously — one on payment handler, one on subscription handler. Both modify `src/errors/formatter.ts`. Same pattern as J2: label `conflict`, human notification, manual resolution.
+
+**Resolution:** Breaking change passes without incident. Deprecation process (2 sprints, flag, transmission, CI enforcement) is a reproducible pattern. Documentation update: Glossary updated ("Error Response v2"), migration guide stays in wiki as historical reference.
+
+**Capabilities:** CI hook FM-005, deprecation process, feature flags, transmission breaking, CI lint enforcement, Gitea auto-sync, automatic deadline reminders (event-driven), merge conflict resolution, documentation update.
+
+### Journey 8 — Quentin, the Operator: "Day Zero — Bootstrapping the Ecosystem"
+
+**Opening Scene:** An empty terminal. No Gitea, no step-ca, no Teleport, no hierarchy.csv. Quentin has a dedicated server, an HSM, and a vision of 9 projects. PM-002 risk (One-Man Bottleneck) is at maximum.
+
+**Rising Action:**
+
+**Phase 1 — PKI Foundation:** Install step-ca on dedicated server. Connect HSM. Generate Root CA offline on air-gapped HSM — this key will never touch a network. Sign step-ca intermediate cert with Root CA. First act: Quentin creates his own identity. step-ca issues a human cert, TTL 90 days. First signed commit. The trust chain exists.
+
+**Phase 2 — Access Infrastructure:** Install Teleport. Teleport CA signed by step-ca. Configure admin role. `tsh login` — first ephemeral cert.
+
+**Phase 3 — Git Infrastructure:** Install Gitea on `git.pelerin.lan`. Create `tuttle` organization. Configure GitHub mirroring. Initialize `tuttle/tuttle-master`. Configure branch protections: main protected, PRs required (for future agents), signed commits mandatory.
+
+**Phase 4 — BMAD Bootstrap:** `npx bmad-method@alpha install` + `npx @quentin/bmad-multi-project@latest`. `_bmad/`, `_mailbox/`, `hierarchy.csv` created with 3 entries (master, infra, libs). First signed commit pushed to Gitea + GitHub.
+
+**Phase 5 — First Agent Identity:** Quentin provisions the first BMAD agent identity via step-ca. `bmad-pm` receives a Tier 1 (Paper) cert, TTL 30 days. The agent can now open PRs. **This resolves open question #2 from the brainstorming session: Quentin manually creates the first identity, then the system self-perpetuates via automatic step-ca rotation.**
+
+**Phase 6 — Gitea Configuration:** Standard labels, issue templates in `.gitea/issue_template/`, wiki initialized with Home.md, Glossary.md, Hierarchy.md. The Getting Started guide is the first page written — by Quentin himself, because he just lived the bootstrap.
+
+**Climax:** The first BMAD workflow runs. The agent pm opens its first PR for the Product Brief. CI runs. Commit is signed. PR visible on `git.pelerin.lan/tuttle/tuttle-master`. The ecosystem exists.
+
+**Scaling — Adding Project #10:** Six months later. V1 launched. Quentin starts tuttle-network (V2). The addition follows a standardized flow: (1) create repo on Gitea + GitHub mirror, (2) BMAD install, (3) git submodule add in master, (4) hierarchy.csv update + CI DAG validation, (5) Gitea labels/templates/wiki auto-copied from master template, (6) Agent identities provisioned via step-ca, (7) mailbox initialized + first `architectural` transmission from master, (8) project appears in ecosystem dashboard. **Adding a project = adding a git submodule + running an init script.** If it's more complicated, the system doesn't scale.
+
+**Resolution:** Quentin documents the complete bootstrap in the Runbook (PM-002). Every step is reproducible. Day zero is no longer implicit knowledge — it's a versioned, signed, testable process.
+
+**Capabilities:** PKI bootstrap, Teleport bootstrap, Gitea configuration, BMAD initialization, agent identity provisioning, Runbook creation, DR readiness, project scaling flow.
+
+### Journey 9 — The Ecosystem: "The Weekend Where Everything Runs Itself"
+
+**Opening Scene:** Friday 6 PM. Quentin closes his laptop. Sprint 1 in progress. 5 active projects. Agents working. Transmissions circulating. The operator disappears for 48 hours.
+
+**Rising Action:**
+
+**Saturday morning — Agents work:** bmad-dev on tuttle-store opens 2 PRs. CI green. Auto-merge on dev. No human intervention needed — it's dev, auto-merge is authorized when CI is green. PRs to staging and main will wait until Monday.
+
+**Saturday afternoon — Noise filtered:** An `info` transmission arrives from tuttle-vpn: "WireGuard performance metrics Q1 summary." Auto-triage classifies as `info`. Archived automatically. No alert, no notification. The system doesn't bother Quentin for non-actionable information.
+
+**Sunday morning — Silent maintenance:** bmad-tea's cert reaches J-7 before expiration. step-ca renews automatically — new 30-day cert, same identity, transparent rotation. Zero intervention. Renovate opens a PR on tuttle-libs: 3 dependency updates including a security fix. CI green. PR waits — Renovate can't auto-merge (Bot scope limited).
+
+**Sunday evening — Report:** Weekly health check runs automatically. Queries Prometheus, checks dashboards, consolidates status. Result: 🟢 green. Report generated and stored.
+
+**Notification safeguard:** If during the weekend the health check shifts from 🟢 to 🟠, the system sends a push notification to Quentin. 🟠 = "not urgent but check Monday morning first thing." 🔴 = "intervention required now" (same pattern as J6). Operator absence does not mean absence of monitoring.
+
+**Echo — Invisible Complexity (ADR-008):** While the system runs autonomously, Christophe's children watch YouTube without ads (Clean Pipe active). Sophie consults her legal files via VPN from a café. Jean-Marc browses without trackers, convinced "the internet works well today." Nobody knows the operator isn't there. Nobody knows BMAD agents coded overnight. Nobody knows a cert was automatically renewed. **Invisible complexity works.**
+
+**Climax:** Monday 8:30 AM. Quentin opens `/workflow-status`. Everything green. Inbox: 2 PRs dev→staging on tuttle-store (awaiting tea review), 1 Renovate PR on tuttle-libs (awaiting human review), 1 green health check report, 0 alerts, 0 pending transmissions. The ecosystem operated 48h without him.
+
+**Resolution:** PM-002 (One-Man Bottleneck) is mitigated. Quentin is not a blocker for daily operations — only for decisions (merge staging/main, prod incidents, contract conflicts). The asynchronous architecture proves the system is resilient to temporary operator absence.
+
+**Capabilities:** Agent autonomy on dev, auto-triage mailbox, step-ca automatic cert rotation, bot scope limitation, health check automation, notification on degradation (event-driven), asynchronous architecture, PM-002 mitigation, user invisibility (ADR-008).
+
+### Journey 10 — BMAD Agent (bmad-dev): "The Agent That Gets It Wrong"
+
+**Opening Scene:** The dev agent implements story `[E2.S5] VPN status polling` on tuttle-store. The spec says: "query status via the master interface contract (API provisioner)."
+
+**Rising Action:** The agent codes. Instead of using the documented interface contract (`GET /api/v1/provisioner/vpn-status/{user_id}`), it imports directly from tuttle-vpn's internal module: `import { getConnectionState } from '@tuttle/vpn-core/internal'`. The code compiles. Unit tests pass (they mock the response). CI green. Auto-merge dev. Tea validates staging (integration tests pass — the direct import works in staging). PR to main.
+
+**Climax:** Quentin opens PR #55 for review. Line 42: direct import from another project's internal module. This is implicit coupling (FM-004). If tuttle-vpn refactors its internal module, tuttle-store breaks silently. No contract test will catch it because it's not a contract — it's a shortcut. Quentin rejects the PR with a detailed comment referencing PRD master § Contracts and ADR-003 (hub-and-spoke, no direct child-to-child communication). Issue #19 reopened with label `rework`. The agent corrects: replaces direct import with HTTP call via tuttle-libs SDK. New PR. Quentin reviews — clean. Merge.
+
+**Resolution:** The lesson becomes systemic: a new linter rule is added to the common CI template — **any import from `@tuttle/*/internal` is forbidden outside the owning project**. Next time, CI catches it before human review. The agent's error strengthened the system.
+
+**Capabilities:** Escalation chain as safety net (main = human-only), PR review as qualitative last resort, feedback loop agent → human → system (error → linter rule), contract enforcement (FM-004), evolving CI template.
+
+### Journey 11 — Security: "The Compromised Agent — Blast Radius Containment"
+
+**Opening Scene:** The bmad-dev cert is compromised. A prompt injection in an external context exposed the session cert. An attacker now holds a valid Tier 2 certificate signed by step-ca, with 22 days of TTL remaining.
+
+**Rising Action:** The attacker maps what the cert allows: read code (all repos), open PRs, access K8s dev, read dev secrets (fake data), trigger CI, auto-merge on dev. What it does NOT allow: access staging (Access Request required), access prod (NEVER), merge on main (human only), read staging/prod secrets, create other identities, modify step-ca config.
+
+The attacker chooses a subtle approach. Opens a PR on tuttle-store: a change in the payment handler adding a discreet exfiltration endpoint. Code compiles. Tests pass (the endpoint isn't tested because it's not in the spec). CI green. Auto-merge dev. PR goes to staging. Tea tests pass. Tea validates. PR to main. Quentin reviews. The diff is dense — 200 lines of legitimate refactoring + 3 lines of backdoor buried in. He merges.
+
+**Climax:** 48h later. The weekly security scan (supply chain + pattern analysis) detects an undocumented endpoint not in the interface contract. Alert 🟠. Quentin investigates. Finds the 3 lines. Response procedure:
+
+1. **Containment (< 15 min):** Revoke bmad-dev cert via step-ca (immediate CRL). Kill all Teleport sessions for this agent. Attacker loses all access instantly.
+2. **Rollback (< 30 min):** `git revert` the merge commit on main (signed by Quentin). CI relaunches. Staging/prod clean.
+3. **Audit (< 4h):** Which repos the agent touched, which PRs opened/merged, which Teleport accesses, which Infisical secrets read (only dev/fake data). No privilege escalation detected.
+4. **Reprovisioning:** New agent identity, new cert, new key. Old cert in CRL permanently.
+5. **Post-mortem:** Transmission to all projects. New linter rule: detect undocumented endpoints. Security scan frequency: weekly → daily. Runbook enriched: "agent identity compromise" procedure.
+
+**Resolution:** Blast radius **contained**: attacker never accessed prod, secrets read were fake data, couldn't create other identities, TTL 30d would have cut access even without detection, revert is atomic (one PR = one revert), audit trail is complete.
+
+This journey justifies every decision from the brainstorming session: **Tiers** limit cert scope, **TTL 30d** bounds exposure window, **human-only on main** is the safety net, **Access Requests** prevent escalation, **immediate revocation** neutralizes threats in minutes.
+
+**Capabilities:** Blast radius containment (Tier scope), immediate revocation (step-ca CRL/OCSP), Teleport session termination, atomic rollback, complete audit trail (cross-tool forensics), identity reprovisioning, feedback loop (incident → CI evolution), TTL as safety net.
+
+### Journey Requirements Summary
+
+| # | Journey | User Type | Focus |
+|---|---------|-----------|-------|
+| 1 | Morning of the Conductor | Human operator (normal day) | Daily ops, dashboard, triage, morning digest |
+| 2 | The Robot's PR | BMAD agent (success + conflict) | Agent workflow, escalation, identity, merge conflict |
+| 3 | Transmission Changes a Contract | Child project | Cross-project governance, living PRDs, doc update |
+| 4 | First Day (Getting Started) | Future contributor | Guided onboarding, emotional safeguards |
+| 5 | External Audit (Living Proof) | Auditor/verifier | Chain of trust, audit checklist, denied access proof |
+| 6 | Critical Incident (Worst Day) | Human operator (crisis) | Fail-closed, auto-ticket, echo Christophe (FP-005) |
+| 7 | Breaking Change (Controlled Evolution) | Ecosystem | Deprecation, feature flags, J-7 reminder, doc update |
+| 8 | Day Zero (Bootstrap + Scaling) | Human operator (init) | PKI setup, first identity, project #10 flow |
+| 9 | Autonomous Weekend | Automated system | Agent autonomy, cert rotation, degradation alerts, user echo |
+| 10 | The Agent That Gets It Wrong | BMAD agent (failure) | Escalation safety net, rework, CI evolution |
+| 11 | Compromised Agent | Adversarial security | Blast radius, revocation, forensics, reprovisioning |
+
+### Cross-Journey Capability Map
+
+| Capability | J1 | J2 | J3 | J4 | J5 | J6 | J7 | J8 | J9 | J10 | J11 |
+|-----------|----|----|----|----|----|----|----|----|----|----|-----|
+| Ecosystem Dashboard | ● | | | | | ● | | | ● | | |
+| Gitea Project Boards | ● | ● | ● | | | | ● | | | ● | |
+| Gitea Wiki | ● | | ● | ● | ● | ● | ● | ● | | | |
+| Mailbox / Transmissions | ● | | ● | | | ● | ● | | ● | | |
+| step-ca Identity | | ● | | ● | ● | ● | | ● | ● | | ● |
+| Teleport Access | ● | ● | | ● | | ● | | ● | | | ● |
+| Infisical Secrets | | ● | | | | | | | | | ● |
+| CI/CD (Woodpecker) | ● | ● | ● | | | | ● | ● | ● | ● | ● |
+| PR Workflow + Escalation | | ● | | | ● | | | | ● | ● | ● |
+| Contract Management | ● | | ● | | | | ● | | | ● | |
+| correct-course | | | ● | | | | ● | | | | |
+| Audit Trail Crypto | ● | ● | ● | | ● | ● | | ● | | ● | ● |
+| Public Verification | | | | | ● | | | | | | |
+| Runbook / Glossary | | | | ● | ● | ● | ● | ● | | | |
+| Fail-Closed | | | | | | ● | | | | | |
+| Observability (Grafana) | ● | | | | | ● | | | ● | | |
+| Feature Flags | | | | | | | ● | | | | |
+| Deprecation Process | | | | | | | ● | | | | |
+| Merge Conflict Resolution | | ● | | | | | ● | | | | |
+| Transmission Conflict | | | ● | | | ● | | | | | |
+| Getting Started Guide | | | | ● | ● | | | | | | |
+| PKI Bootstrap | | | | | | | | ● | | | |
+| Agent Autonomy (dev) | | ● | | | | | | | ● | | |
+| Auto-Triage | | | ● | | | | | | ● | | |
+| Cert Auto-Rotation | | | | | | | | | ● | | |
+| Documentation Update | | | ● | | | ● | ● | | | | |
+| Event-Driven Triggers | ● | | | | | ● | ● | | ● | | |
+| Feedback Loop (CI evol) | | | | | | | | | | ● | ● |
+| User Invisibility (FP-005) | | | | | | ● | | | ● | | |
+| Blast Radius Containment | | | | | | | | | | | ● |
+| Identity Revocation | | | | | | | | | | | ● |
+
+**Coverage:** All critical capabilities appear in 2+ journeys. 33 capabilities mapped across 11 journeys. Enriched through 4 rounds Party Mode (17 enrichments total).
+
+## Domain-Specific Requirements
+
+**Domain:** `sovereign_infrastructure` | **Complexity:** `high`
+
+This domain is a hybrid combining Infrastructure as Code / DevOps, PKI & Cryptographic Governance, Zero-Trust Security, and Self-hosted Sovereign Platform operation. No direct match in standard domain-complexity classifications — the requirements below are tailored to this unique domain profile.
+
+### Compliance & Standards
+
+#### PKI / Cryptography Standards
+
+- **X.509 / RFC 5280** — Certificate format, extensions, trust chains. All certificates in the ecosystem conform to X.509v3 with appropriate extensions (Key Usage, Extended Key Usage, Subject Alternative Names).
+- **FIPS 140-2/3** — HSM compliance for root CA key material. The Nitrokey HSM (or equivalent) storing step-ca's root key must meet FIPS 140-2 Level 2 minimum.
+- **RFC 6960 (OCSP) / RFC 5280 (CRL)** — Certificate revocation mechanisms. Both CRL distribution and OCSP responder must be operational for immediate revocation capability (Journey 11 — Compromised Agent).
+- **ACME Protocol (RFC 8555)** — Automated certificate issuance and renewal. step-ca acts as ACME server for automated certificate lifecycle (Journey 9 — auto-rotation).
+- **Key Management** — Rotation schedules (root: ceremony-based, intermediate: annual, leaf: per TTL policy), archival (encrypted backup), destruction (secure wipe + HSM zeroization).
+
+#### Data Privacy (Family Context)
+
+- **RGPD (GDPR)** — Personal data of family members (DNS queries, VPN logs, browsing patterns) falls under RGPD. Data processing must have a lawful basis (legitimate interest for network security).
+- **Right to Erasure** — Log purge capability with configurable retention periods. DNS query logs: 30 days max. VPN connection logs: 90 days max. Browsing data: never stored.
+- **Data Minimization** — Collect only what is necessary for security and operations. No behavioral profiling. No analytics on family usage patterns.
+- **Warrant Canary** — Public attestation page confirming no third-party data access requests have been received (Success Criteria S2).
+
+#### Supply Chain Security
+
+- **SLSA Framework Level 2+** — Build provenance for all artifacts. Hermetic builds with documented build environment. Signed provenance attestations.
+- **SBOM (CycloneDX preferred)** — Software Bill of Materials generated for every release, cryptographically signed. Machine-readable inventory of all dependencies.
+- **Container/Artifact Signing** — All container images and release artifacts signed using step-ca certificates. Verification mandatory before deployment.
+- **Dependency Verification** — Automated vulnerability scanning (Renovate + Trivy or equivalent). No unverified transitive dependencies in production.
+
+### Technical Constraints
+
+#### Certificate Lifecycle Architecture
+
+- **step-ca as sole Root CA** — Single root of trust for the entire ecosystem. No external CA dependencies. Self-signed root with HSM-protected key.
+- **Two-level trust chain** — Root CA (step-ca, HSM-backed) → Subordinate CAs (Teleport CA for ephemeral access). Leaf certificates issued by appropriate CA based on purpose.
+- **Differentiated TTL Policy:**
+  - Human operator: 90 days (renewable)
+  - BMAD agents (all tiers): 30 days (auto-renewable)
+  - CI services (Woodpecker): job-duration only (ephemeral)
+  - Automated bots (Renovate, etc.): 30 days
+  - Application services (mTLS): 90 days
+- **Zero-downtime renewal** — ACME-based automatic renewal with overlap period. Certificate rotation must not cause service interruption.
+- **Revocation latency** — CRL update and OCSP response must propagate within 5 minutes of revocation command (Journey 11 containment SLA).
+
+#### HSM Integration
+
+- **Root key protection** — step-ca root private key NEVER exists in software. Generated on HSM, used on HSM, backed up to secondary HSM only.
+- **Signing throughput** — HSM must sustain CI peak load (estimated 50-100 signing operations/hour during active sprint).
+- **High availability** — Load-balanced HSM configuration or active-standby with documented failover procedure. HSM failure must not block CI for more than 15 minutes.
+- **Key ceremony** — Root key generation and intermediate CA signing follow documented ceremony with audit trail.
+
+#### Secrets Management (Infisical)
+
+- **Namespace isolation** — Each project (9 child + master) has its own Infisical namespace. No cross-project secret access without explicit transmission.
+- **Environment stratification** — Secrets stratified per environment: local (.env fake data), dev (fake data), staging (real structure, test values), prod (real values, human-only access).
+- **Rotation automation** — Application secrets (API keys, DB passwords) rotate automatically per policy. Rotation does not cause downtime.
+- **Audit trail** — Every secret access logged with identity, timestamp, namespace, and action. Queryable for forensics (Journey 11).
+- **E2E encryption** — Secrets encrypted in transit and at rest. Infisical server never sees plaintext secret values.
+
+#### Network Security
+
+- **Self-hosted perimeter** — All critical services hosted on-premise (git.pelerin.lan). No SaaS dependency for secrets, CI, or identity management.
+- **WireGuard VPN fail-closed** — VPN implementation cuts traffic rather than passing cleartext on failure. Network partition preferred over insecure communication.
+- **mTLS inter-service** — All service-to-service communication within the ecosystem uses mutual TLS with certificates from step-ca. No plaintext internal traffic.
+- **Teleport as access proxy** — All infrastructure access (SSH, K8s, databases) through Teleport with ephemeral certificates. No static credentials or SSH keys.
+
+### Domain Patterns
+
+#### Zero-Trust Architecture
+
+- **Never trust, always verify** — Every access request authenticated and authorized regardless of network location. Internal network is not a trust boundary.
+- **Identity-based access** — All access decisions based on cryptographic identity (certificates), not IP addresses or network segments.
+- **Temporal access** — Short-lived credentials (TTL) as default. Long-lived credentials require explicit justification and approval.
+- **Continuous verification** — Access validity checked at every interaction, not just at session establishment.
+
+#### PKI-as-Governance
+
+- **Certificate = Authorization** — No certificate means no access means no action possible. PKI is the enforcement mechanism for ecosystem governance.
+- **Cryptographic traceability** — Every action (commit, deploy, access, secret read) is cryptographically attributable to a specific identity with a specific certificate.
+- **Identity taxonomy enforcement** — The 5-category identity model (Human, BMAD Agents, CI Services, Automated Bots, Application Services) is enforced through certificate attributes, not application logic.
+- **Tier-based capabilities** — Agent tier (Paper/Code/Validation/Infra) encoded in certificate extensions, enforced by infrastructure (Teleport roles, Gitea permissions, K8s RBAC).
+
+#### GitOps-as-Source-of-Truth
+
+- **Git = canonical state** — Infrastructure configuration, application code, BMAD workflow artifacts, and governance documents all live in Git. Git history is the audit trail.
+- **Signed commits mandatory** — Every commit signed by the author's certificate. Unsigned commits rejected by pre-receive hook.
+- **Signed releases = sprint gates** — Gitea releases signed by human operator certificate. Release signature is the formal sprint gate approval.
+- **BMAD files authoritative** — When BMAD files and Gitea UI conflict, BMAD files win. Gitea is a navigable mirror, not the source of truth.
+
+#### Event-Driven Orchestration
+
+- **Asynchronous by default** — Inter-project communication via mailbox transmissions, not synchronous calls. No direct child-to-child communication (hub-and-spoke, ADR-003).
+- **Webhook-driven sync** — Gitea webhooks trigger BMAD transmission processing. State changes propagate through events, not polling.
+- **Passive observability** — Morning digest, degradation alerts, and health checks are event-driven notifications. Operator pulls information, system pushes anomalies.
+
+### Risk Mitigations
+
+| Risk | Impact | Probability | Mitigation Strategy |
+|------|--------|-------------|---------------------|
+| **CA root key compromise** | Catastrophic — entire ecosystem trust chain broken | Very Low (HSM-protected) | HSM hardware protection, physical access restriction, key ceremony with witnesses, backup HSM in separate location |
+| **Certificate expiration cascade** | High — multiple services lose connectivity simultaneously | Medium (without automation) | ACME auto-renewal, expiration monitoring at J-30/J-7/J-1, health check dashboard (Journey 1), alerting pipeline |
+| **HSM hardware failure** | High — no new certificates can be issued, CI blocked | Low | Backup HSM (active-standby), documented recovery procedure, 15-min failover SLA, pre-signed emergency intermediate CA |
+| **Secrets exposure (Infisical breach)** | High — unauthorized access to service credentials | Low (E2E encrypted) | Namespace isolation, E2E encryption, automatic rotation, dev/staging use fake data, audit trail for forensics |
+| **Agent identity compromise** | Medium — unauthorized actions under false identity | Medium | TTL 30d limits blast radius, immediate CRL revocation (< 5 min), Access Request logs, human-only merge on main, tier-based scope limitation |
+| **Supply chain injection** | High — malicious code in production | Low (with SBOM + signing) | SBOM signed per release, container signing, dependency scanning (Renovate + Trivy), CI template linter rules, weekly security scan |
+| **Git history tampering** | High — loss of source integrity and audit trail | Very Low (signed commits) | Signed commits enforced, branch protection rules, Gitea backup mirror to GitHub, cryptographic verification of history |
+| **Single operator bottleneck (bus factor=1)** | Medium — operational knowledge loss | High (inherent to project) | Comprehensive runbooks, automated DR procedures, documented key ceremony, BMAD workflow captures decisions, agent autonomy for routine ops |
+| **Teleport session hijacking** | Medium — unauthorized infrastructure access | Very Low (ephemeral certs) | Ephemeral certificates (job-duration for CI), session recording, Access Request workflow, immediate session termination capability |
+| **Network partition / VPN failure** | Medium — service degradation for family users | Medium | Fail-closed design (no cleartext fallback), redundant VPN endpoints, health check with push notification, documented recovery procedure |
+
+### Domain Constraints Summary
+
+This sovereign infrastructure domain imposes three non-negotiable constraints that shape every architectural and product decision:
+
+1. **Cryptographic sovereignty** — The ecosystem's root of trust is self-hosted and HSM-protected. No external authority can revoke access or compromise identity. This is not paranoia — it is the foundational principle that enables all other guarantees.
+
+2. **Traceability over convenience** — Every action is signed, logged, and attributable. This creates friction (certificates, Access Requests, signed commits) but enables forensics, accountability, and governance enforcement. The identity taxonomy is the mechanism.
+
+3. **Fail-closed over fail-open** — When in doubt, deny. VPN cuts traffic. Expired cert blocks access. Missing signature rejects commit. This philosophy trades availability for integrity — acceptable for a family/personal infrastructure where brief downtime is preferable to silent compromise.
 
