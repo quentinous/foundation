@@ -143,10 +143,36 @@ workflow_status:
   # ═══════════════════════════════════════════════════════════════
   phase_3_solutioning:
     architecture:
-      status: "required"
+      status: "completed"
+      file: "architecture.md"
+      started_at: "2026-01-31"
+      completed_at: "2026-01-31"
       agent: "architect"
       command: "/bmad:bmm:workflows:create-architecture"
-      output: "System architecture document"
+      output: "Architecture Decision Document — 8 steps, 15+ decisions, 8 patterns, 10 projects"
+      completed_steps:
+        - step: "step-01-init"
+          note: "4 documents chargés (PRD, Product Brief ref, Brainstorming 2026-01-30, Architecture Debate)"
+        - step: "step-02-context"
+          note: "Project Context Analysis — 58 FRs, 8 constraints, cross-cutting concerns"
+        - step: "step-03-starter"
+          note: "Starter Template N/A — zero-code orchestration project, toolchain decisions documented"
+        - step: "step-04-decisions"
+          note: "4 catégories: ADR-012 obligations distribuées, 5 PKI decisions, 5 Gitea decisions, bootstrap 7 phases"
+        - step: "step-05-patterns"
+          note: "8 patterns cross-project (transmission, contract, git, CI, naming, mailbox, labels, logging) + 6 enforcement guidelines"
+        - step: "step-06-structure"
+          note: "Master repo tree complet, 10 projets écosystème, 4 boundaries, FR mapping, data flow 12 steps"
+        - step: "step-07-validation"
+          note: "28/28 FRs, 18/18 NFRs Part A, 28/28 standards Part B. 0 critical gaps, 3 important, 2 nice-to-have. READY FOR IMPLEMENTATION."
+        - step: "step-08-complete"
+          note: "Workflow finalisé, handoff documentation"
+      key_decisions:
+        - "ADR-012: Distributed obligation assignment (Provider/Responsible/Compliant)"
+        - "PKI: step-ca + Teleport Community + HSM root CA"
+        - "Gitea: MCP 17/18 ops, wiki git push, Woodpecker CI, GitHub backup only"
+        - "Bootstrap: 7 phases (0-6) + Phase 7 module completion blocking"
+        - "Teleport Community: documented risk on Access Requests"
 
     epics_and_stories:
       status: "required"
@@ -178,23 +204,27 @@ workflow_status:
 
 # Next action
 next:
-  workflow: "create-architecture"
-  agent: "architect"
-  command: "/bmad:bmm:workflows:create-architecture"
-  reason: "PRD complété (12 steps). L'architecte détermine la structure de l'écosystème, assigne les obligations (FR4, FR34-FR45) aux projets, et valide la séparation module/master (ADR-011)."
+  workflow: "create-epics-and-stories"
+  agent: "pm"
+  command: "/bmad:bmm:workflows:create-epics-and-stories"
+  reason: "Architecture complétée (8 steps). Le PM transforme les 28 FRs master + architecture en epics et stories implémentables."
   context: |
-    1. PRD tuttle-master complet : 58 FRs, 18 NFRs master + 28 standards, 11 ADRs, 11 journeys
-    2. ADR-011 : 30 FRs migrent vers PRD bmad-multi-project (via bmb). 28 FRs restent dans master (14 config + 14 obligations)
-    3. Les 14 obligations écosystème (PKI, signing, DR, fail-closed) ne sont PAS attribuées à un projet — l'architecte décide
-    4. Le polish PRD (Executive Summary, déduplication) est reporté post-architecture
-    5. Module bmad-multi-project = enfant DAG, bmb workflow, git@git.pelerin.lan:quentin/multi-project.git
-    6. Séquence : Architecture master → PRD module (bmb) → PRD enfants → Implémentation
+    1. PRD tuttle-master complet : 58 FRs (28 master scope), 18 NFRs master + 28 standards
+    2. Architecture complète : ADR-012 obligations distribuées, PKI, Gitea, bootstrap 7 phases
+    3. Zero-code project : stories = création de fichiers de config, policies, contracts, templates
+    4. Bootstrap sequence (Phase 0-6 + Phase 7 module) définit l'ordre d'implémentation
+    5. Module bmad-multi-project = dépendance bloquante (Phase 7), workflow bmb séparé
+    6. Le polish PRD (Executive Summary, déduplication) est toujours reporté — peut être fait avant ou pendant epics
   alternatives:
     - workflow: "prd -v"
       agent: "pm"
       command: "/bmad:bmm:workflows:prd"
-      reason: "Valider le PRD avant architecture (optionnel)"
+      reason: "Valider/polish le PRD avant epics (Executive Summary, déduplication)"
+    - workflow: "testarch-test-design"
+      agent: "tea"
+      command: "/bmad:bmm:workflows:testarch-test-design"
+      reason: "System-level testability review (optionnel avant epics)"
     - workflow: "create-ux-design"
       agent: "ux-designer"
       command: "/bmad:bmm:workflows:create-ux-design"
-      reason: "UX design (conditionnel — si UI identifié par l'architecte)"
+      reason: "UX design (conditionnel — pas d'UI identifié par l'architecte pour master)"
