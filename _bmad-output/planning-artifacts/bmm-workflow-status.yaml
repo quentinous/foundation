@@ -84,48 +84,52 @@ workflow_status:
   # ═══════════════════════════════════════════════════════════════
   phase_2_planning:
     prd:
-      status: "in_progress"
+      status: "completed"
       file: "prd.md"
       started_at: "2026-01-29"
+      completed_at: "2026-01-31"
       agent: "pm"
       command: "/bmad:bmm:workflows:prd"
       mode: "create"
-      output: "Product Requirements Document with FRs and NFRs"
-      current_step: "step-05-domain"
-      current_substep: "completed-ready-for-step-06"
-      resume_instructions: |
-        Lancer: /bmad:bmm:workflows:prd
-        Le PRD existe déjà → mode Create, reprendre au Step 6 (Innovation Focus).
-        Steps 1-5 complétés. Step 4 (User Journeys) inclut 11 journeys + 4 rounds Party Mode.
-        Step 5 (Domain Requirements) couvre: PKI/crypto standards, RGPD, supply chain security, certificate lifecycle, HSM, Infisical, network security, zero-trust, PKI-as-Governance, GitOps, event-driven, 10 risk mitigations.
-        Brainstorming 2026-01-30 intégré (13 décisions: Teleport+PKI, Identity Taxonomy 5 catégories, Gitea mapping).
-        Prochaine action : charger step-06-innovation.md et exécuter.
+      output: "Product Requirements Document with FRs, NFRs, and PRD Scope Separation (ADR-011)"
       completed_steps:
         - step: "step-01-init"
           note: "PRD créé, 1 input (Product Brief)"
         - step: "step-02-discovery"
           note: "Classification complétée + Party Mode (2 rounds) + Advanced Elicitation (5/5)"
         - step: "step-03-success"
-          note: "Success Criteria + Product Scope complets. 4 rounds Party Mode (51 propositions). Couvre: orchestration, mailbox, git policy, Infisical, PKI/step-ca/HSM, signatures, traçabilité, supply chain, privacy, DR, observabilité, CI/CD, UX, accessibilité, conformité légale."
+          note: "Success Criteria + Product Scope. 4 rounds Party Mode (51 propositions). 64 critères techniques stratifiés S0/S1/S2."
         - step: "step-04-journeys"
-          note: "11 User Journeys + 4 rounds Party Mode (17 enrichments). Couvre: operator daily/crisis, agent success/failure/compromise, child project governance, contributor onboarding, external audit, bootstrap, autonomous weekend."
+          note: "11 User Journeys + 4 rounds Party Mode (17 enrichments). 33 capacités, 5 types d'utilisateurs."
         - step: "step-05-domain"
-          note: "Domain Requirements pour sovereign_infrastructure (high complexity). PKI/crypto standards (X.509, FIPS 140, ACME), RGPD famille, supply chain (SLSA/SBOM), certificate lifecycle, HSM HA, Infisical isolation, network security, zero-trust, PKI-as-Governance, GitOps, 10 risk mitigations, 3 non-negotiable domain constraints."
-      enrichments_applied:
-        - "Party Mode Round 1: platform_orchestrator, sovereign_infrastructure, family_protection, invisible_complexity"
-        - "Party Mode Round 2: Scope 7 projets V1, DAG dépendances, transmissions critiques par sprint"
-        - "ADR: 10 Architecture Decision Records (ADR-001 à ADR-010)"
-        - "War Room: 6 décisions (WR-001 à WR-006) + flux transmission 8 étapes"
-        - "Failure Mode Analysis: 6 FM + 5 NFR-RESILIENCE + matrice priorité P0/P1/P2"
-        - "Pre-mortem: 5 scénarios + 5 NFR-PM"
-        - "First Principles: 6 vérités fondamentales + 1 principe design + 5 NFR-FP"
-        - "Step 3 Party Mode R1: 12 propositions (clone résilient, automatisation %, health check, stratification sprint gates)"
-        - "Step 3 Party Mode R2: 13 propositions (Infisical, env matrix, CI template, observabilité, glossaire, runbook)"
-        - "Step 3 Party Mode R3: 12 propositions (supply chain, privacy, DR, network security, feature flags, WCAG, conformité)"
-        - "Step 3 Party Mode R4: 14 propositions (PKI step-ca/HSM, commit signing, release signing, audit trail, warrant canary, SBOM signé)"
-        - "User input: Infisical isolé par projet, .env fake data local/dev"
-        - "User input: step-ca backend HSM load-balancé, tout tracé/vérifié/signé"
-        - "User input: politique git cohérente écosystème (branches, PR, releases)"
+          note: "Domain Requirements sovereign_infrastructure (high complexity). PKI, RGPD, supply chain, zero-trust, GitOps."
+        - step: "step-06-innovation"
+          note: "5 axes innovation + Verifiable Trust. 1 round Party Mode (4/5 acceptées)."
+        - step: "step-07-project-type"
+          note: "Vision B: tuttle-master = pure configuration du module bmad-multi-project. 7 gaps module identifiés."
+        - step: "step-08-scoping"
+          note: "MVP = boucle de coordination documentaire sur 3 projets. Hub strict (ADR-003). Transmissions auto-suffisantes (sessions Claude séparées). Phase 1/2/3."
+        - step: "step-09-functional"
+          note: "58 FRs en 10 domaines. 1 round Party Mode (9 propositions, 9 acceptées). FR50-FR58 ajoutés."
+        - step: "step-10-nonfunctional"
+          note: "18 NFRs propres master (Part A) + 28 standards écosystème (Part B). Séparation master own vs imposed standards."
+        - step: "step-11-separation"
+          note: "ADR-011: séparation MODULE (30 FRs → PRD bmad-multi-project via bmb) vs MASTER (28 FRs = 14 config Tuttle + 14 obligations écosystème). Pas d'attribution infra prématurée — l'architecte décidera."
+        - step: "step-12-complete"
+          note: "Workflow completion. Polish (Executive Summary, déduplication) reporté post-architecture."
+      pending_polish:
+        - "Executive Summary manquant"
+        - "Duplication structurelle Product Scope vs Project Scoping à fusionner"
+        - "8 métriques dupliquées 3-7 fois à consolider"
+        - "Mapping Sprint (S0/S1/S2) ↔ Phase (1/2/3) à clarifier"
+        - "Clarification comptage projets (7 V1 + tuttle-key + bmad-multi-project = 9 enfants + master)"
+      key_decisions:
+        - "ADR-011: 30 FRs module / 28 FRs master"
+        - "Hub strict pour transmissions (ADR-003)"
+        - "Sessions Claude séparées par projet (modèle A+C)"
+        - "Transmissions auto-suffisantes comme critère Must-Have"
+        - "Obligations infra non attribuées — décision architecte"
+        - "bmad-multi-project = enfant dans le DAG, workflow bmb (git@git.pelerin.lan:quentin/multi-project.git)"
 
     ux_design:
       status: "conditional"
@@ -174,24 +178,23 @@ workflow_status:
 
 # Next action
 next:
-  workflow: "prd"
-  agent: "pm"
-  command: "/bmad:bmm:workflows:prd"
-  reason: "Continuer PRD Step 6 Innovation Focus (steps 1-5 complétés)"
-  resume: |
-    1. Lancer /bmad:bmm:workflows:prd
-    2. Le PRD prd.md existe → mode Create, reprendre au Step 6 (Innovation Focus)
-    3. Steps complétés: step-01-init, step-02-discovery, step-03-success, step-04-journeys, step-05-domain
-    4. Step 4: 11 User Journeys + 4 rounds Party Mode (17 enrichments)
-    5. Step 5: Domain Requirements sovereign_infrastructure (PKI standards, RGPD, supply chain, HSM, zero-trust, 10 risk mitigations)
-    6. Brainstorming 2026-01-30 intégré (13 décisions: Teleport+PKI, Identity Taxonomy, Gitea mapping)
-    7. Prochaine étape: step-06-innovation.md (Innovation Focus)
+  workflow: "create-architecture"
+  agent: "architect"
+  command: "/bmad:bmm:workflows:create-architecture"
+  reason: "PRD complété (12 steps). L'architecte détermine la structure de l'écosystème, assigne les obligations (FR4, FR34-FR45) aux projets, et valide la séparation module/master (ADR-011)."
+  context: |
+    1. PRD tuttle-master complet : 58 FRs, 18 NFRs master + 28 standards, 11 ADRs, 11 journeys
+    2. ADR-011 : 30 FRs migrent vers PRD bmad-multi-project (via bmb). 28 FRs restent dans master (14 config + 14 obligations)
+    3. Les 14 obligations écosystème (PKI, signing, DR, fail-closed) ne sont PAS attribuées à un projet — l'architecte décide
+    4. Le polish PRD (Executive Summary, déduplication) est reporté post-architecture
+    5. Module bmad-multi-project = enfant DAG, bmb workflow, git@git.pelerin.lan:quentin/multi-project.git
+    6. Séquence : Architecture master → PRD module (bmb) → PRD enfants → Implémentation
   alternatives:
+    - workflow: "prd -v"
+      agent: "pm"
+      command: "/bmad:bmm:workflows:prd"
+      reason: "Valider le PRD avant architecture (optionnel)"
     - workflow: "create-ux-design"
       agent: "ux-designer"
       command: "/bmad:bmm:workflows:create-ux-design"
-      reason: "UX research and design (can run parallel with PRD)"
-    - workflow: "init-multi-project"
-      agent: "orchestrator"
-      command: "/bmad:multiproject:workflows:init-multi-project"
-      reason: "Initialize git submodule structure for 9 projects"
+      reason: "UX design (conditionnel — si UI identifié par l'architecte)"

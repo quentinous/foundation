@@ -5,6 +5,50 @@ stepsCompleted:
   - step-03-success
   - step-04-journeys
   - step-05-domain
+  - step-06-innovation
+  - step-07-project-type
+  - step-08-scoping
+  - step-09-functional
+  - step-10-nonfunctional
+  - step-11-separation
+  - step-12-complete
+step06InnovationInsights:
+  partyModeRound: 1
+  proposals: 5
+  accepted: 4
+  rejected: 1
+  acceptedProposals:
+    - "Add 'Verifiable Trust' as 5th innovation axis — cryptographic proof accessible to non-technical users (Mary/Analyst)"
+    - "Add Sprint 0 validation metric: governance overhead < 40% threshold (Winston/Architect)"
+    - "Add 5th innovation risk: AI quality plateau — agent rework rate > 30% = model adjustment needed (Murat/TEA)"
+    - "UX paradigm 'show don't tell' — in-app integrity verification, public verification page, tuttle verify CLI (Sally/UX + Amelia/Dev)"
+  rejectedProposals:
+    - "Replace 'sovereign' with 'verifiable' in commercial positioning — Quentin keeps both terms, Verifiable Trust is additive not substitutive (John/PM)"
+step07ProjectTypeInsights:
+  architecturalDecision: "Vision B — bmad-multi-project module is the technical solution, tuttle-master is pure configuration"
+  keyDecisions:
+    - "tuttle-master produces zero executable code — configuration, contracts, governance only"
+    - "bmad-multi-project module provides all inter-project orchestration (mailbox, hierarchy, contracts, isolation, triage, escalation)"
+    - "Module gaps identified: contract management, git policy enforcement, stack governance, CI templates, metrics export, git hooks→agents"
+    - "Module gaps become requirements for module PRD, NOT tuttle-master implementation tasks"
+    - "tuttle-master contains children as git submodules (recursive clone, GitHub fallback)"
+    - "Technology governance: children propose → master evaluates → human validates exact versions → sync"
+    - "Contracts are markdown descriptive (not machine-readable) for V1"
+    - "Ecosystem monitoring via Grafana on existing K8s cluster"
+    - "Git hooks as evolution path for automated agent triggering"
+  moduleGaps:
+    - "Contract management (create, validate, sync)"
+    - "Git policy enforcement (branches, PR rules, signing)"
+    - "Stack governance (propose → validate → sync)"
+    - "CI/CD template management"
+    - "Version compatibility matrix"
+    - "Git hooks → trigger agent workflows"
+    - "Metrics export (JSON/YAML for Prometheus scraping)"
+  sequencePlan:
+    - "1. Finish tuttle-master PRD (current — documents configuration needs)"
+    - "2. Create bmad-multi-project module PRD (gaps become requirements)"
+    - "3. Develop/extend module via bmb (module builder)"
+    - "4. Configure tuttle-master (pure config once module ready)"
 inputDocuments:
   - product-brief-tuttle-master-2026-01-27.md
   - analysis/brainstorming-session-2026-01-30.md
@@ -16,7 +60,7 @@ documentCounts:
   projectDocs: 0
 date: 2026-01-29
 author: Quentin
-status: in_progress
+status: completed
 classification:
   projectType: platform_orchestrator
   domain: sovereign_infrastructure
@@ -95,6 +139,14 @@ architectureDecisionRecords:
     status: accepted
     decision: "Les transmissions ne sont pas informatives mais DÉCLENCHENT des mises à jour de PRD via workflow correct-course"
     tradeoffs: "✅ PRDs toujours à jour, traçabilité des changements / ⚠️ Overhead processus, discipline requise"
+  - id: ADR-011
+    title: "PRD Separation — Module Capabilities vs Master Configuration & Obligations"
+    status: accepted
+    decision: "Séparer les FRs en 2 catégories : MODULE (bmad-multi-project, 30 FRs → PRD module via bmb) et MASTER (config Tuttle + obligations écosystème, 28 FRs → ce PRD). Les FRs infra (PKI, Gitea, etc.) restent dans master comme obligations — l'architecte et le flux de transmissions BMAD détermineront naturellement quel projet les implémente."
+    tradeoffs: "✅ Séparation module/master claire, pas de décision architecturale prématurée sur l'infra / ⚠️ Nécessite PRD module avant implémentation"
+    context: "Décision émergée lors du polish Step 11. Correction : la catégorie infra a été retirée car attribuer des FRs à tuttle-infra serait prématuré — c'est le rôle de l'architecte et du flux BMAD."
+    moduleFRs: "FR2,FR3,FR5,FR6-FR13,FR15-FR17,FR19-FR22,FR26-FR29,FR31-FR33,FR50-FR53,FR56,FR58,FR52"
+    masterFRs: "FR1,FR4,FR14,FR18,FR23-FR25,FR30,FR34-FR49,FR54-FR55,FR57,FR59"
 warRoomInsights:
   decisions:
     - id: WR-001
@@ -927,4 +979,718 @@ This sovereign infrastructure domain imposes three non-negotiable constraints th
 2. **Traceability over convenience** — Every action is signed, logged, and attributable. This creates friction (certificates, Access Requests, signed commits) but enables forensics, accountability, and governance enforcement. The identity taxonomy is the mechanism.
 
 3. **Fail-closed over fail-open** — When in doubt, deny. VPN cuts traffic. Expired cert blocks access. Missing signature rejects commit. This philosophy trades availability for integrity — acceptable for a family/personal infrastructure where brief downtime is preferable to silent compromise.
+
+## Innovation & Novel Patterns
+
+### Detected Innovation Areas
+
+The innovation in tuttle-master is not in individual technology components — PKI, Zero Trust, GitOps, and mTLS are established enterprise patterns. The innovation lies in **how these components are assembled, bootstrapped, and positioned**.
+
+#### 1. AI-Enabled Solo Bootstrap of Enterprise-Grade Infrastructure
+
+Traditional path: raise capital → hire team → build infrastructure → add security governance later. Tuttle inverts this: one operator uses AI agents (BMAD methodology) as a force multiplier to bootstrap enterprise-grade infrastructure *before* the first line of product code. The economic equation changes — what previously required a funded team becomes feasible for a solo founder with AI-assisted workflows. The BMAD agents don't just write code; they participate in governance (PRDs, Architecture, Epics, Code Review) with cryptographic identities and tiered access.
+
+#### 2. Delegation-Ready Architecture from Day Zero
+
+Most startups add access controls, identity management, and audit trails reactively — after the first security incident or the first untrustworthy employee. Tuttle builds delegation infrastructure before delegation exists:
+
+- **Identity taxonomy** (5 categories: Human, BMAD Agents, CI Services, Automated Bots, Application Services) is enforced through certificate attributes, not application logic
+- **Tier-based capabilities** (Paper/Code/Validation/Infra) encoded in X.509 extensions limit blast radius by design
+- **Human-only gates** (main branch merge, production access) ensure no agent or future employee can bypass governance unilaterally
+- **Cryptographic traceability** makes every action attributable — commits, deploys, secret access, infrastructure changes
+
+This is an investment in future-proofing, not a technical breakthrough. Well-executed RBAC + PKI + least privilege avoids months of rework when the team grows. The value is in having it from day zero, not in the patterns themselves.
+
+#### 3. Security-First Product Engineering
+
+The conventional approach treats security as a layer added on top of functionality. Tuttle treats security as the foundation that functionality is built upon:
+
+- PKI hierarchy deployed before any application service
+- Signed commits mandatory before any code is written
+- Fail-closed patterns chosen before any user-facing feature exists
+- Supply chain security (SBOM, artifact signing) integrated into CI from Sprint 0
+
+This front-loaded investment eliminates the "security debt" that forces most startups into expensive retrofits when they scale or face compliance requirements (NIS2, GDPR audits, SOC2).
+
+#### 4. Sovereign Infrastructure as Commercial Differentiator
+
+In the post-NIS2/GDPR regulatory environment, "self-hosted, HSM-backed, auditable, open-source" is not just a technical choice — it is a market positioning:
+
+- Full audit trail verifiable by third parties (Journey 5 — External Auditor)
+- Warrant canary signed by Root CA — cryptographic proof of non-compromise
+- No SaaS dependency for secrets, CI, or identity management
+- Every artifact signed and publicly verifiable
+
+This positions Tuttle against consumer VPN providers (NordVPN, ProtonVPN) not on features but on **verifiable trust** — the infrastructure is not just claimed to be secure, it is provably secure through cryptographic evidence.
+
+#### 5. Verifiable Trust — Cryptographic Proof Accessible to Non-Technical Users
+
+Every VPN provider claims "we don't log." Every privacy product says "your data is safe." These are **trust-me** claims — the user must take the company's word for it. No consumer VPN provider today offers cryptographically verifiable proof of its claims.
+
+Tuttle's innovation is **verify-don't-trust**: the infrastructure produces cryptographic evidence that non-technical users can verify:
+
+- **Signed releases** — every binary, container, and package cryptographically signed with HSM-backed keys, chain traceable to Root CA
+- **Signed SBOM** — machine-readable inventory of every dependency, signed per release
+- **Signed warrant canary** — public attestation of non-compromise, signed by Root CA, verifiable by anyone with the public key
+- **Cryptographic audit trail** — non-modifiable history of certificate issuance, release signatures, and signed commits
+
+**The UX paradigm: "show, don't tell."** The proof exists in the infrastructure, but the differentiator is making it accessible to Christophe — not as a white paper, but as an experience:
+
+- In-app integrity verification: a single button that checks the running application's signature chain and displays ✅ or ❌
+- Public verification page: release signatures + checksums + SBOM accessible without authentication
+- CLI tool (`tuttle verify`) for technical users performing independent audits
+- Application self-integrity check on every launch — the app verifies itself before the user uses it
+
+The user doesn't need to understand X.509 certificates or SBOM formats. The app translates cryptographic proof into a simple trust signal: **"This application is exactly what was built, signed, and published. Verify it yourself."**
+
+### Market Context & Competitive Landscape
+
+The innovation is contextual, not absolute:
+
+| Aspect | Industry State | Tuttle's Approach |
+|--------|---------------|-------------------|
+| **Enterprise PKI** | Standard in Fortune 500, absent in startups | Applied from day 0 at startup scale |
+| **AI agent identity** | Emerging (Google, Microsoft roadmaps 2025-2026) | Implemented via existing PKI with X.509 extensions |
+| **GitOps communication** | Flux/ArgoCD for infra, not for inter-project governance | Extended to asynchronous project-to-project coordination |
+| **Solo founder + AI agents** | Common for code generation, rare for infrastructure governance | AI agents as full participants in BMAD lifecycle with cryptographic identity |
+| **Sovereign consumer product** | ProtonVPN (Swiss jurisdiction), Mullvad (Swedish) | Self-hosted, user-verifiable, open infrastructure |
+| **Verifiable trust (B2C)** | No consumer VPN offers cryptographic proof of claims | User-facing verification: in-app integrity check, public signatures, warrant canary |
+
+### Validation Approach
+
+The innovative aspects require validation at different stages:
+
+| Innovation Claim | Validation Method | Sprint Gate |
+|-----------------|-------------------|-------------|
+| AI agents can bootstrap enterprise infra | BMAD workflows produce functional infrastructure with signed artifacts | Sprint 0 |
+| Governance overhead is sustainable | Sprint 0 retrospective — measure time spent on governance vs feature development. **Threshold: governance overhead < 40% of sprint capacity. Above 40% = red flag requiring simplification** | Sprint 0 |
+| Delegation-ready architecture works for first hire | Onboarding test: new contributor operates within governance constraints (Journey 4) | Sprint 2 |
+| Security-first doesn't block velocity | Sprint velocity metrics — compare to equivalent projects without governance overhead | Sprint 1+ |
+| Sovereign positioning attracts subscribers | Beta feedback + conversion metrics from tuttle-store | Post-Sprint 2 |
+| Fail-closed is acceptable for family users | User testing — Christophe's reaction to maintenance screens (Journey 6 echo) | Sprint 2 |
+| Verifiable Trust resonates with users | Beta users shown in-app verification — measure engagement rate and comprehension | Post-Sprint 2 |
+
+### Risk Mitigation
+
+| Innovation Risk | Consequence | Mitigation |
+|----------------|-------------|------------|
+| **Governance overhead slows development** | Competitors ship faster, product arrives too late | Automation target: M3 > 60%, M6 > 80%. AI agents absorb governance cost. If overhead > 40% of sprint velocity at Sprint 0 retrospective, simplify |
+| **Solo bootstrap with AI proves insufficient** | Infrastructure quality gaps, security theater instead of security | External audit before V1 launch. Runbook tested by third party (PM-002). If audit fails, pause and hire |
+| **Sovereign positioning has no market** | Product built for a market that doesn't exist | Beta validation Sprint 2. If < 50 interested users after beta, pivot to managed service model |
+| **Security-first creates UX friction** | Christophe notices the complexity (violates FP-005) | UX testing at every sprint gate. If any technical concept is exposed to end user, it's a bug |
+| **AI agent quality plateau** | Agents handle 80% of work but remaining 20% (edge cases, security, architecture) requires human expert — "solo + AI" model hits a ceiling and doesn't scale | Define at Sprint 0 which workflows are AI-safe vs human-only. Track agent rework rate per sprint. If agent PRs require human correction > 30% of the time, the model needs adjustment: either hire for the human-only workflows or reduce governance scope to what AI can reliably handle. Probability: medium. Impact: high |
+
+## Platform Orchestrator Specific Requirements
+
+### Project-Type Overview
+
+tuttle-master is classified as `platform_orchestrator` — a project type not found in standard CSV taxonomies because it produces **no executable code**. Its output is exclusively configuration, contracts, governance documents, and coordination artifacts.
+
+**Architectural paradigm — Vision B: Module-Driven Configuration**
+
+tuttle-master is a **pure configuration project** that configures the `@quentin/bmad-multi-project` module. The module provides all inter-project orchestration capabilities (mailbox, hierarchy, transmissions, isolation, contracts, triage, escalation). tuttle-master provides the **what** — the module provides the **how**.
+
+| Responsibility | Owner |
+|---------------|-------|
+| Mailbox protocol, transmission types, auto-triage engine, escalation rules, isolation enforcement | `bmad-multi-project` module |
+| Hierarchy validation (DAG, cycles, semantic checks) | `bmad-multi-project` module |
+| Contract management workflows (creation, validation, sync) | `bmad-multi-project` module |
+| Stack governance workflows (proposal → validation → sync) | `bmad-multi-project` module |
+| Git policy enforcement workflows | `bmad-multi-project` module |
+| CI template management | `bmad-multi-project` module |
+| Which 9 projects exist and their hierarchy | tuttle-master configuration |
+| Which contracts bind which projects (Store↔Provisioner, Provisioner↔VPN) | tuttle-master configuration |
+| Which stack technologies are validated (versions, frameworks) | tuttle-master configuration |
+| PKI implementation choices (step-ca, HSM Nitrokey, TTL policies) | tuttle-master configuration |
+| Business domain specifics (sovereign infrastructure, family protection) | tuttle-master configuration |
+| Infrastructure choices (Gitea, K8s, Grafana, Teleport, Infisical) | tuttle-infra project |
+
+**Implication:** Any requirement in this PRD that describes a **generic multi-project orchestration capability** is a requirement for the `bmad-multi-project` module, not for tuttle-master. This PRD documents only the Tuttle-specific configuration and the expectations tuttle-master has of the module.
+
+### Module Dependency
+
+tuttle-master depends on `@quentin/bmad-multi-project` module providing the following capabilities. If the module does not yet support a capability, it becomes a requirement for the module's own PRD — not an implementation task for tuttle-master.
+
+**Required module capabilities:**
+
+| Capability | Current Module State | Gap |
+|-----------|---------------------|-----|
+| Mailbox system (inbox/outbox/archive/triage/escalation) | ✅ Complete | — |
+| Hierarchy management (hierarchy.csv, DAG validation) | ✅ Complete | — |
+| Ecosystem status dashboard | ✅ Workflow exists | Grafana integration missing |
+| Init multi-project (add children, auto + manual) | ✅ Complete | — |
+| Transmissions (send/receive/check-inbox) | ✅ Complete | — |
+| Isolation rules (access matrix enforcement) | ✅ Defined | Enforcement via git hooks missing |
+| Deprecation management | ✅ Template exists | — |
+| Contract management (create, validate, sync) | ❌ Not in module | Module PRD requirement |
+| Git policy enforcement (branches, PR rules, signing) | ❌ Not in module | Module PRD requirement |
+| Stack governance (children propose → master validates → sync) | ❌ Not in module | Module PRD requirement |
+| CI/CD template management (common pipeline, per-project adaptation) | ❌ Not in module | Module PRD requirement |
+| Version compatibility matrix (inter-project version pinning) | ❌ Not in module | Module PRD requirement |
+| Git hooks → trigger agent workflows | ❌ Not in module | Module PRD requirement |
+
+**Module maturity expectation:** The module must be sufficiently complete that configuring a new multi-project ecosystem is a guided, configuration-only process — no custom orchestration code required in the master project.
+
+### Technical Architecture Considerations
+
+#### Orchestration Model
+
+tuttle-master configures a **file-based, Git-native orchestration model**:
+
+- **Current:** Markdown files in `_mailbox/` directories, processed by BMAD agent workflows via the module
+- **Evolution path:** Git hooks (pre-commit, post-merge, post-receive) trigger BMAD agent workflows automatically. A Gitea webhook detects changes in `api/` or `contracts/` directories and creates transmissions without human initiation
+- **Non-goal for V1:** No REST API, no event bus, no message broker. The module handles all coordination via Git
+
+**tuttle-master configures:**
+- Which transmission types are used (all 10 defined in module)
+- Escalation SLAs (critical: 24h, standard: 7d)
+- Auto-triage rules per project (which types are auto-handled)
+- Subscription filters per project (interested_in, ignore)
+
+#### Contract Management
+
+Contracts between projects are **markdown descriptive documents**, not machine-readable schemas:
+
+- Contracts live in each project's `contracts/` directory
+- Master holds the canonical version; children hold a synced copy
+- Validation is human + master review, not automated parsing
+- CI hook (FM-005) blocks merge if `contracts/` changes without transmission — this is a **module capability** (git hook enforcement)
+- Evolution to OpenAPI/JSON Schema is a Growth Feature, not V1
+
+**tuttle-master configures:**
+- Which contracts exist: Store↔Provisioner (payment-webhook-spec, subscription-lifecycle), Provisioner↔VPN (vpn-user-api-spec, vpn-status-polling)
+- Contract ownership (which project is source of truth for each contract)
+- Sync policy (master always CC'd on contract transmissions)
+
+#### Project Lifecycle Governance
+
+Adding a new project to the ecosystem requires **master opinion + human validation**:
+
+1. Proposal (human or agent suggests new project)
+2. Master analysis (module's init-multi-project workflow in auto mode: analyze architecture, propose hierarchy position, dependencies)
+3. Master opinion (BMAD agent evaluates fit: does this project belong? where in hierarchy? what contracts needed?)
+4. Human validation (Quentin approves/rejects/modifies)
+5. Execution (module handles: repo creation, BMAD install, mailbox init, hierarchy.csv update, submodule add, Gitea config)
+
+**tuttle-master configures:**
+- Approval workflow (master opinion mandatory, human final authority)
+- Required infrastructure per child (Gitea remote + GitHub backup, Woodpecker CI, Infisical namespace)
+- BMAD installation profile (`npx bmad-method@alpha install` + `npx @quentin/bmad-multi-project@latest`)
+
+#### Ecosystem Monitoring
+
+**Target: Grafana dashboard on existing K8s cluster.**
+
+The module's ecosystem-status workflow currently produces a text-based report. For tuttle-master, the monitoring chain is:
+
+1. **Data collection:** Module workflows query each project's status (YAML files, mailbox state, hierarchy.csv)
+2. **Metrics export:** Prometheus metrics exposed from a lightweight exporter that parses module output (transmission counts, inbox depth, alert counts, sprint progress)
+3. **Visualization:** Grafana dashboard on existing K8s cluster displays ecosystem health
+4. **Alerting:** Grafana alerts for 🔴 conditions (critical transmission > 24h, inbox > 10, stale transmission)
+
+**tuttle-master configures:**
+- Alert thresholds (green/orange/red per Success Criteria)
+- Dashboard layout (prioritized hierarchical view, alerts sorted by severity)
+- Notification channels (push notification for 🟠/🔴)
+
+**Module gap:** The module needs to produce machine-readable output (JSON/YAML metrics) that a Prometheus exporter can scrape. Currently it produces human-readable markdown only.
+
+#### Stack Technology Governance
+
+Technology choices follow a **bottom-up proposal, top-down validation** model:
+
+1. **Child proposes:** A child project identifies a technology need (e.g., "tuttle-store needs PostgreSQL 16.2 + Prisma ORM 5.x")
+2. **Transmission:** Child sends `architectural` transmission to master with rationale
+3. **Master evaluates:** BMAD agent (architect) reviews against ecosystem constraints (compatibility, security, maintenance burden)
+4. **Human validates:** Quentin approves specific versions (not ranges — exact pinned versions)
+5. **Sync:** Approved stack documented in master (technology registry). All projects using that technology pin to the validated version
+6. **Enforcement:** Version drift detected by CI (module capability) — transmission generated if a project uses a non-validated version
+
+**tuttle-master configures:**
+- Technology registry (approved technologies + exact versions)
+- Validation criteria (security audit status, license compatibility, maintenance activity)
+- Drift tolerance (zero for security-critical dependencies, minor version flexibility for dev tools)
+
+### Repository Structure
+
+tuttle-master contains its children as **git submodules** with dual remotes (Gitea primary + GitHub backup):
+
+```
+tuttle-master/                  ← repo Git principal
+├── _bmad/                      ← BMAD framework (installed via npx)
+├── _bmad-output/               ← Planning artifacts (PRD, Architecture, Epics, Sprint Status)
+├── _mailbox/                   ← Mailbox system (module-managed)
+├── hierarchy.csv               ← Ecosystem hierarchy (module-validated, source of truth)
+├── contracts/                  ← Canonical interface contracts (markdown)
+├── technology-registry/        ← Approved stack with pinned versions
+├── policies/                   ← Git policy, security policy, governance rules
+├── templates/                  ← CI templates, PR templates, issue templates
+├── docs/                       ← Runbook, glossary, getting started, onboarding
+├── tuttle-infra/               ← git submodule (Gitea + GitHub)
+├── tuttle-libs/                ← git submodule
+├── tuttle-store/               ← git submodule
+├── tuttle-vpn/                 ← git submodule
+├── tuttle-provisioner/         ← git submodule
+├── tuttle-apps/                ← git submodule (parent node)
+│   ├── android/                ← git submodule
+│   └── windows/                ← git submodule
+└── tuttle-key/                 ← git submodule (brownfield migration)
+```
+
+No `src/`, no `lib/`, no application code. Every file is either a configuration consumed by the module, a governance document consumed by humans/agents, or a template consumed by child projects.
+
+**Submodule policies:**
+- Submodule ref updated on each release tag of child (not on every commit)
+- `git clone --recurse-submodules` brings entire ecosystem; GitHub fallback if Gitea unavailable
+- Each child is a sovereign BMAD project with its own `_bmad/`, `_mailbox/`, `hierarchy.csv`
+- Master NEVER writes to child content (isolation rule — only exception: init + deprecated.md)
+
+### Implementation Sequence
+
+The Vision B dependency chain:
+
+1. **Finish tuttle-master PRD** (current) — documents configuration needs and module expectations
+2. **Create bmad-multi-project module PRD** — gaps identified here become module requirements
+3. **Develop/extend module** via bmb (module builder) — contracts, git policy, stack governance, CI templates, metrics export, git hooks
+4. **Configure tuttle-master** — pure configuration once module ready
+5. **Sprint 0 module readiness gate:** module must support mailbox + hierarchy + init (already complete) plus contract management and git policy enforcement (gaps to fill)
+
+Sprint 0 infrastructure (tuttle-infra: K8s, Gitea, step-ca, Teleport, Infisical) runs in parallel — it does not depend on the module.
+
+## Project Scoping & Phased Development
+
+### MVP Strategy & Philosophy
+
+**MVP Approach:** Infrastructure Coordination MVP — validate the complete document-coordination cycle across 3 projects before adding security layers and scaling.
+
+tuttle-master's MVP is not a feature set — it is the **proven ability to coordinate BMAD documents across multiple projects through self-sufficient transmissions**. The minimum viable product is a functioning coordination loop where a decision in one project propagates to all impacted projects, modifies their BMAD documents via guided workflows, and maintains cross-project coherence.
+
+**Coordination Model:** Hub-strict (ADR-003). All child-to-child communication transits through master. Master validates and redistributes. Each transmission is **self-sufficient** — it contains enough context (what, why, which documents are impacted, expected action, acceptance criteria) to be processed in isolation by a separate Claude Code session in the target project. This constraint derives from the operational model: one operator, separate Claude Code sessions per project, zero context bleed between sessions.
+
+**Resource Model:** Solo operator (Quentin) + BMAD AI agents, each operating within their project scope via separate Claude Code sessions.
+
+### MVP Feature Set (Phase 1)
+
+**Core Capability: End-to-End Transmission Cycle**
+
+The MVP validates three transmission directions:
+1. **Master → children:** A decision made in master (e.g., UX strategy, security policy) generates a self-sufficient transmission to impacted children. Each child's Claude Code session processes the transmission via BMAD workflow, modifies relevant documents (PRD, Architecture, Epics), and requests human validation.
+2. **Child → master → impacted children:** A discovery in a child project (e.g., new feature need, API change) generates a transmission to master. Master validates, integrates into its governance documents, and redistributes to impacted projects.
+3. **Cross-project coherence:** After a transmission cycle completes, all impacted BMAD documents across all projects reflect the change consistently.
+
+**Must-Have Capabilities:**
+
+| Capability | Validation Criterion |
+|-----------|---------------------|
+| Mailbox functional on 3+ projects | inbox/outbox/sent/archive present, transmission send/receive works |
+| Complete transmission cycle (3 directions) | Master→child, child→master, child→master→children all produce document changes |
+| Self-sufficient transmissions | A Claude Code session in the target project processes the transmission without any context from the source project |
+| BMAD transmission processing workflows | correct-course, transmission handling, human validation — all guided by BMAD |
+| hierarchy.csv + DAG validation | DAG (Directed Acyclic Graph — dependency graph with no cycles, ensuring a valid build order: infra → libs → store‖vpn → provisioner → apps) validated in CI |
+| Markdown contracts between projects | Interface specifications in `contracts/`, canonical version in master |
+| CI hook FM-005 | Merge blocked if changes in `contracts/` or `api/` without associated transmission |
+| Git submodules (3 projects minimum) | Recursive clone functional, dual remote Gitea + GitHub |
+| Project isolation enforced | Master never writes to child content, separate Claude Code sessions per project |
+
+**Essential User Journeys Supported in Phase 1:**
+- Journey 1 (Morning of the Conductor) — partial: dashboard, triage, transmission processing
+- Journey 3 (Transmission Changes a Contract) — full cycle
+- Journey 8 (Day Zero Bootstrap) — partial: 3 projects initialized
+
+### Post-MVP Features
+
+**Phase 2 (Security & Automation):**
+
+| Feature | Rationale |
+|---------|-----------|
+| PKI hierarchy (Root CA / step-ca / leaf certs) | Security-first foundation, enables all signing and mTLS |
+| Mandatory commit signing (human + agents) | Cryptographic traceability |
+| Infisical secrets management (isolated per project) | Secrets policy enforcement |
+| Auto-triage mailbox (8 transmission types) | Reduces manual triage as projects scale from 3 to 5+ |
+| Escalation system (SLA alerts) | Prevents stale transmissions |
+| Common CI template | Consistency across 5+ projects |
+| Observability (Prometheus + Grafana) | Ecosystem health monitoring |
+| Release signing (binaries, containers, packages) | Supply chain security |
+| mTLS inter-services via step-ca | Network security |
+| 5+ active projects | Store, VPN, provisioner added to ecosystem |
+
+**Phase 3 (Validation & Scale):**
+
+| Feature | Rationale |
+|---------|-----------|
+| 9 projects fully initialized | Complete V1 ecosystem |
+| Ecosystem-status Grafana dashboard | Prioritized view, alerts by severity |
+| Operational runbook (PM-002) | Third-party testable without Quentin |
+| Cryptographic audit trail | Non-modifiable, queryable history |
+| Public verification (signatures, SBOM, warrant canary) | Verifiable Trust for external parties |
+| Contributor onboarding (Journey 4) | Validates delegation-ready architecture |
+| Client apps (Android + Windows) | End-user products integrated |
+| WCAG 2.1 AA accessibility | Automated CI tests |
+
+### Risk Mitigation Strategy
+
+**Technical Risks:**
+
+| Risk | Mitigation |
+|------|------------|
+| Self-sufficient transmission quality — incomplete briefs cause wrong document modifications in target project | Structured transmission template with mandatory fields (context, decision, impacted documents, expected action, acceptance criteria). BMAD workflow validates completeness before send |
+| Module gaps block Phase 1 | Phase 1 uses only capabilities the module already supports (mailbox, hierarchy, transmissions, init). 7 identified gaps are Phase 2/3 requirements |
+| Context bleed between projects in same Claude session | Operational rule: separate Claude Code sessions per project (model A). No exception |
+
+**Market Risks:**
+
+| Risk | Mitigation |
+|------|------------|
+| Document coordination model doesn't scale beyond 3 projects | Phase 1 validates at 3 projects. If coordination breaks at 3, simplify before scaling |
+| Transmission overhead exceeds governance < 40% threshold | Measure at Phase 1 retrospective. If > 40%, reduce mandatory transmission types |
+
+**Resource Risks:**
+
+| Risk | Mitigation |
+|------|------------|
+| Solo operator + AI model insufficient for 9 projects | Phase 2 targets auto-triage > 80%. If agent rework rate > 30%, hire for human-only workflows |
+| bmad-multi-project module development delays Phase 2 | Phase 1 independent of module gaps. Module PRD created in parallel |
+
+## Functional Requirements
+
+**Capability contract:** Every feature in the final product must trace to a functional requirement listed below. Capabilities not listed here will not exist in the product. 58 FRs across 10 capability areas, enriched through 1 round Party Mode (9 proposals, 9 accepted).
+
+### Ecosystem Hierarchy & Structure
+
+- **FR1:** Operator can define the project hierarchy as a DAG (Directed Acyclic Graph) declaring all projects, their parent-child relationships, and inter-project dependencies
+- **FR2:** System can validate the hierarchy for structural integrity (parsable format, no cycles, valid parent references, existing paths) on every change
+- **FR3:** Operator can add a new child project to the ecosystem through a guided workflow that analyzes fit, proposes hierarchy position, and requires human approval
+- **FR4:** Operator can clone the entire ecosystem recursively, with automatic fallback to a backup remote if the primary remote is unavailable
+- **FR5:** System can enforce that each child project is a sovereign entity with its own BMAD structure, mailbox, and local hierarchy reference
+- **FR52:** System can synchronize submodule references in master when a child project creates a release tag, following the defined sync policy
+
+### Transmission & Mailbox
+
+- **FR6:** Operator or agent can send a typed transmission from any project to one or more target projects, with master always in CC
+- **FR7:** System can deliver transmissions to target projects' inboxes via the mailbox file-based protocol (outbox → inbox)
+- **FR8:** Each transmission can carry self-sufficient context: what changed, why, which documents are impacted, expected action, and acceptance criteria — enabling processing in isolation without source project context
+- **FR9:** Operator can consult a project's inbox and process pending transmissions via a guided BMAD workflow
+- **FR10:** System can auto-triage transmissions by type (info→archive, bug→create story, dependency→backlog, architectural→escalate)
+- **FR11:** System can detect stale transmissions (pending beyond SLA threshold) and generate escalation alerts
+- **FR12:** System can detect contradictory transmissions impacting the same contract and escalate them with a conflict tag for human resolution
+- **FR13:** System can archive processed transmissions with resolution status and traceability
+- **FR50:** Operator can configure transmission processing rules per type (which workflow triggers, which documents are impacted, which validations are required) for each project
+- **FR51:** System can validate transmission completeness before send (mandatory fields present, target projects exist in hierarchy, referenced documents exist) and reject incomplete transmissions
+
+### Contract Management
+
+- **FR14:** Operator can define interface contracts between projects as structured markdown documents
+- **FR15:** System can maintain a canonical version of each contract in master and synced copies in child projects
+- **FR16:** System can block code merges that modify contract or API directories without an associated transmission (CI hook FM-005)
+- **FR17:** Operator can update a contract through the correct-course workflow, propagating changes to all impacted projects via transmission
+- **FR18:** Operator can identify at a glance which contracts exist between which projects
+- **FR53:** System can execute automated contract tests that validate alignment between master-defined contracts and child project implementations on every merge
+
+### Document Coordination & Coherence
+
+- **FR19:** When a transmission is processed in a target project, the BMAD workflow can modify the relevant documents (PRD, Architecture, Epics, Sprint Status) and request human validation
+- **FR20:** System can maintain cross-project document coherence: after a transmission cycle completes, all impacted BMAD documents reflect the change consistently
+- **FR21:** Operator can trace any document change back to the transmission that triggered it
+- **FR22:** System can detect divergence between master governance documents and child project implementation (living documentation principle)
+
+### Governance & Policies
+
+- **FR23:** Operator can define and enforce a unified git policy across all projects (branching strategy, protected branches, naming conventions, PR/review policy, release tagging, submodule sync)
+- **FR24:** Operator can define a secrets management policy with per-project namespace isolation and per-environment stratification
+- **FR25:** Operator can define a technology registry of approved technologies with pinned versions
+- **FR26:** System can detect version drift when a child project uses a non-validated technology version and generate a transmission
+- **FR27:** Operator can define deprecation policies with migration windows, and system can track migration compliance with automated reminders
+- **FR28:** System can enforce project isolation: no project can write to another project's content (except master during init)
+- **FR55:** Operator can define the PR escalation chain per project and per branch (auto-merge rules for dev, required reviews for staging, human-only merge for main)
+- **FR56:** Operator can add new CI validation rules (linter rules, forbidden patterns, mandatory checks) to the common CI template and propagate them to all projects via transmission
+
+### Ecosystem Monitoring & Status
+
+- **FR29:** Operator can view the current status of all projects, their phases, progress, active alerts, and pending transmissions in a single dashboard
+- **FR30:** Operator can identify the most critical project and next required action within 10 seconds of reading the dashboard
+- **FR31:** System can generate a weekly health check report consolidating ecosystem status (green/orange/red)
+- **FR32:** System can push notifications to the operator when ecosystem health degrades (orange or red conditions)
+- **FR33:** System can generate a morning digest summarizing overnight activity (pending transmissions, PRs, alerts, health status)
+- **FR57:** Operator can view a visual dependency graph of all projects and their contracts, maintained up to date as contracts evolve
+- **FR58:** Operator can track sprint progress across all active projects simultaneously, with per-project and per-epic progress visible from master
+
+### Identity & Access
+
+- **FR34:** Operator can provision cryptographic identities for humans, BMAD agents, CI services, automated bots, and application services through a unified PKI
+- **FR35:** System can enforce mandatory signed commits on all projects for all identity types
+- **FR36:** System can enforce tier-based access: agents limited by certificate tier, humans with elevated privileges, CI with job-scoped ephemeral access
+- **FR37:** Operator can revoke any identity immediately, with revocation propagating within 5 minutes
+- **FR38:** System can automatically renew certificates before expiration without service interruption
+
+### Supply Chain & Artifact Integrity
+
+- **FR39:** System can sign all release artifacts (binaries, containers, packages) with HSM-backed keys
+- **FR40:** System can generate and sign a Software Bill of Materials (SBOM) for every release
+- **FR41:** System can verify dependency signatures on input and sign artifacts on output in CI pipelines
+- **FR42:** External party can verify any release artifact's signature chain back to the root CA using public keys
+
+### Disaster Recovery & Resilience
+
+- **FR43:** Operator can execute a documented recovery procedure for each critical infrastructure component (git hosting, secrets manager, container orchestrator, database)
+- **FR44:** System can maintain dual remotes (primary + backup) for every project, with automatic fallback on primary unavailability
+- **FR45:** System can operate fail-closed: halt services rather than pass traffic or data in an insecure state on failure
+- **FR54:** Operator can rollback any individual project independently without breaking cross-project interfaces, using the version compatibility matrix to identify retro-compatible versions
+
+### Onboarding, Documentation & Sprint Tracking
+
+- **FR46:** New contributor can become operational in the ecosystem through a guided Getting Started flow without synchronous onboarding from the operator
+- **FR47:** Third party can execute the operational runbook and resolve a simulated incident without the operator's help
+- **FR48:** System can maintain a unified glossary of technical and user-facing terms accessible across all projects
+
+### Phase Alignment
+
+- **FR49:** Each FR maps to a development phase: Phase 1 (MVP — coordination validation on 3 projects), Phase 2 (security & automation on 5+ projects), or Phase 3 (validation & scale on 9 projects)
+
+**Phase Mapping:**
+
+| Phase | FRs |
+|-------|-----|
+| **Phase 1 (MVP)** | FR1-FR9, FR13-FR22, FR28-FR30, FR44, FR48-FR51 |
+| **Phase 2 (Security & Automation)** | FR10-FR12, FR23-FR27, FR31-FR33, FR34-FR38, FR39-FR41, FR45, FR52-FR53, FR55-FR56, FR58 |
+| **Phase 3 (Validation & Scale)** | FR42-FR43, FR46-FR47, FR54, FR57 |
+
+**Party Mode Enrichment (Round 1 — 9 proposals, 9 accepted):**
+
+| FR | Source | Contribution |
+|----|--------|-------------|
+| FR50 | John (PM) | Transmission processing rules configuration per type |
+| FR51 | Winston (Architect) | Transmission completeness validation before send |
+| FR52 | Winston (Architect) | Submodule sync on release tag |
+| FR53 | Murat (TEA) | Automated contract tests (PRD ↔ implementation) |
+| FR54 | Murat (TEA) | Independent per-project rollback |
+| FR55 | Mary (Analyst) | PR escalation chain definition per project/branch |
+| FR56 | Mary (Analyst) | CI rule enrichment and propagation via transmission |
+| FR57 | Sally (UX) | Visual dependency graph of projects and contracts |
+| FR58 | Bob (SM) | Cross-project sprint progress tracking |
+
+## Non-Functional Requirements
+
+### Part A — Master's Own NFRs
+
+*Quality attributes of tuttle-master itself — how well master performs its coordination and governance role.*
+
+#### Coordination Performance
+
+| NFR | Criterion | Measure |
+|-----|-----------|---------|
+| **NFR-COORD-01** | Hierarchy validation speed | DAG validation (syntax + semantics + cycle detection) completes < 30 seconds for up to 20 projects |
+| **NFR-COORD-02** | Ecosystem status generation | Dashboard data collection across all projects completes < 2 minutes |
+| **NFR-COORD-03** | Project count scaling | Coordination quality consistent from 3 to 9+ projects without degradation of triage, transmission processing, or document coherence |
+| **NFR-COORD-04** | Transmission volume capacity | Mailbox system navigable with up to 50 active transmissions across all projects without triage backlog |
+| **NFR-COORD-05** | Contract navigability | Contract management remains navigable with up to 20 inter-project contracts (visual graph required at 10+) |
+
+#### Operability
+
+| NFR | Criterion | Measure |
+|-----|-----------|---------|
+| **NFR-OPS-01** | Governance overhead | Governance activities (triage, reviews, transmissions, contract updates) consume < 40% of sprint capacity. Above 40% = simplification required |
+| **NFR-OPS-02** | Operator context switching | Operator switches between projects with zero context loss — all state in living documents accessible via workflow-status per project and ecosystem-status globally |
+| **NFR-OPS-03** | Dashboard readability | Most critical project and next required action identifiable in < 10 seconds of reading ecosystem-status |
+| **NFR-OPS-04** | Autonomous operation | System operates without operator for 48h+ during routine periods. Only decision-requiring events (main merge, prod incident, contract conflict) need human |
+| **NFR-OPS-05** | Agent rework rate | Agent PRs requiring human correction < 30% of total. Above 30% = model adjustment needed |
+
+#### Transmission Quality
+
+| NFR | Criterion | Measure |
+|-----|-----------|---------|
+| **NFR-TX-01** | Transmission self-sufficiency | 100% of transmissions processable in isolation by a Claude Code session in the target project without source project context |
+| **NFR-TX-02** | Transmission completeness validation | Zero incomplete transmissions sent — mandatory fields validated before dispatch |
+| **NFR-TX-03** | Transmission traceability | Every document change in any project traceable to the transmission that triggered it. Chain: transmission → workflow → document change → human validation |
+| **NFR-TX-04** | Transmission compatibility multi-workflow | Master transmissions are processable by projects using bmm (standard projects) AND bmb (module builder) workflows. Transmission format is workflow-agnostic |
+
+#### Document Coherence
+
+| NFR | Criterion | Measure |
+|-----|-----------|---------|
+| **NFR-DOC-01** | Cross-project consistency | After a transmission cycle completes, zero contradictions between master governance documents and impacted child documents |
+| **NFR-DOC-02** | Document freshness | Gap between child API change and master contract update < 48h |
+| **NFR-DOC-03** | Runbook completeness | Third party resolves simulated incident using runbook alone without operator assistance |
+| **NFR-DOC-04** | Onboarding efficiency | New contributor operational via Getting Started guide without synchronous onboarding from operator |
+
+### Part B — Standards Master Imposes on the Ecosystem
+
+*Quality requirements that master defines as governance. Master documents and enforces these; child projects and module implement them.*
+
+**Propagation mechanism:** Standards that master imposes on the ecosystem are propagated via `architectural` transmissions. For standard child projects (bmm workflow), the transmission triggers correct-course or PRD update workflows. For the bmad-multi-project module (bmb workflow, git@git.pelerin.lan:quentin/multi-project.git), the transmission triggers the module's own requirement integration process. The transmission format is identical — only the processing workflow differs in the target project.
+
+**Module as ecosystem member:** `@quentin/bmad-multi-project` is a child in the hierarchy DAG, developed via bmb workflow. Standards marked "enforced by: bmad-multi-project module" in Part B become functional requirements in the module's own PRD, propagated via architectural transmission from master.
+
+#### Security Standards
+
+Master requires that:
+
+| Standard | Requirement | Enforced by |
+|----------|-------------|-------------|
+| **STD-SEC-01** | Zero cleartext secrets in any repository | CI scan per project (module CI template) |
+| **STD-SEC-02** | Certificate revocation propagation < 5 minutes | step-ca + CRL/OCSP (tuttle-infra) |
+| **STD-SEC-03** | 100% signed commits on protected branches | Gitea/GitHub pre-receive hooks (tuttle-infra) |
+| **STD-SEC-04** | Zero unsigned artifacts in staging/prod | CI gate per project (module CI template) |
+| **STD-SEC-05** | Per-project secrets namespace isolation | Infisical config (tuttle-infra) |
+| **STD-SEC-06** | Zero PII in logs | CI regex scan per project (module CI template) |
+| **STD-SEC-07** | Agent blast radius limited by cert tier | step-ca cert attributes + Teleport roles + Gitea permissions (tuttle-infra + module) |
+| **STD-SEC-08** | Fail-closed on all critical systems | Each child project's implementation |
+| **STD-SEC-09** | Zero critical vulnerability untreated > 7 days | CI dependency scan per project (module CI template) |
+| **STD-SEC-10** | Inter-service communication via mTLS or K8s Network Policies only | tuttle-infra + each child project |
+
+#### Reliability Standards
+
+Master requires that:
+
+| Standard | Requirement | Enforced by |
+|----------|-------------|-------------|
+| **STD-REL-01** | Git hosting availability 99.5% monthly, GitHub backup for read-only during downtime | tuttle-infra |
+| **STD-REL-02** | RPO < 24h, RTO < 4h for critical components | tuttle-infra (Gitea, Infisical, K8s, PostgreSQL) |
+| **STD-REL-03** | Zero service interruption from certificate expiration (ACME auto-renewal) | tuttle-infra (step-ca) |
+| **STD-REL-04** | Recursive clone succeeds with one remote unavailable | Git submodule config (module + tuttle-infra) |
+| **STD-REL-05** | Per-project rollback < 30 minutes without breaking cross-project interfaces | Each child project + version compatibility matrix (module) |
+| **STD-REL-06** | HSM failover < 15 minutes | tuttle-infra |
+
+#### Performance Standards
+
+Master requires that:
+
+| Standard | Requirement | Enforced by |
+|----------|-------------|-------------|
+| **STD-PERF-01** | Transmission delivered outbox → target inbox < 5 minutes | bmad-multi-project module |
+| **STD-PERF-02** | Full CI pipeline < 15 minutes per project | Woodpecker + module CI template |
+| **STD-PERF-03** | HSM sustains 50-100 signing operations/hour | tuttle-infra |
+| **STD-PERF-04** | Auto-triage rate: M3 > 80%, M6 > 90%, M12 > 95% | bmad-multi-project module |
+
+#### Integration Standards
+
+Master requires that:
+
+| Standard | Requirement | Enforced by |
+|----------|-------------|-------------|
+| **STD-INT-01** | Gitea as primary (tea CLI + MCP Gitea), GitHub as backup (gh CLI) | tuttle-infra + each child project |
+| **STD-INT-02** | step-ca ACME (RFC 8555) for automated certificate lifecycle | tuttle-infra |
+| **STD-INT-03** | Teleport for all infrastructure access (SSH, K8s, databases) | tuttle-infra |
+| **STD-INT-04** | Infisical E2E encrypted secrets per namespace, per environment | tuttle-infra |
+| **STD-INT-05** | Prometheus-scrapable metrics + Grafana dashboards | tuttle-infra + module metrics export |
+| **STD-INT-06** | Woodpecker CI with common template, mandatory stages | Module CI template + each child |
+
+#### Traceability Standards
+
+Master requires that:
+
+| Standard | Requirement | Enforced by |
+|----------|-------------|-------------|
+| **STD-TRACE-01** | Every action cryptographically attributable to a specific identity | step-ca cert attributes (tuttle-infra) |
+| **STD-TRACE-02** | Audit trail append-only, non-modifiable, queryable | tuttle-infra |
+| **STD-TRACE-03** | Release signatures, checksums, SBOM, warrant canary publicly verifiable | Each child project + tuttle-infra |
+| **STD-TRACE-04** | 5-category identity model enforced through certificate attributes | step-ca config (tuttle-infra) |
+
+#### Accessibility Standards
+
+Master requires that:
+
+| Standard | Requirement | Enforced by |
+|----------|-------------|-------------|
+| **STD-ACC-01** | WCAG 2.1 AA for all user-facing projects, axe-core in CI | Module CI template + each user-facing child |
+| **STD-ACC-02** | Zero technical concepts exposed to end users (FP-005) | Each user-facing child project |
+
+**Summary:** 18 NFRs propres à master (Part A) + 28 standards imposés à l'écosystème (Part B) with clear ownership of enforcement. Module bmad-multi-project (bmb workflow) treated as ecosystem child — standards propagated via architectural transmissions.
+
+## PRD Scope Separation (ADR-011)
+
+### Decision Context
+
+During the polish review (Step 11), analysis revealed that 30 of 58 functional requirements describe **generic multi-project orchestration capabilities** that belong to the `bmad-multi-project` module, not to tuttle-master's Tuttle-specific configuration. The remaining 28 FRs describe either Tuttle-specific configuration or ecosystem obligations that master defines.
+
+This separation is consistent with the Vision B architectural decision (Step 7): tuttle-master is pure configuration, the module provides the engine.
+
+**Important:** Only the module separation is decided here. The question of which child project implements the infrastructure obligations (PKI, Gitea, Teleport, etc.) is **deliberately left open** — the architect and the natural BMAD transmission flow will determine this. Prematurely attributing FRs to tuttle-infra would short-circuit the discovery process.
+
+### Two-Way FR Attribution
+
+#### FRs Migrating to bmad-multi-project Module PRD (30 FRs)
+
+These FRs describe **generic capabilities** that any multi-project ecosystem would need. They become functional requirements of the module's own PRD, developed via bmb workflow on `git@git.pelerin.lan:quentin/multi-project.git`.
+
+| Capability Area | FRs | Description |
+|----------------|-----|-------------|
+| Hierarchy Engine | FR2, FR3, FR5, FR52 | DAG validation, project addition workflow, sovereignty enforcement, submodule sync |
+| Mailbox Engine | FR6, FR7, FR8, FR9, FR13 | Send, deliver, self-sufficient format, inbox processing, archival |
+| Triage & Escalation | FR10, FR11, FR12, FR50, FR51 | Auto-triage, stale detection, conflict detection, processing rules config, completeness validation |
+| Contract Management | FR15, FR16, FR17, FR53 | Contract sync, CI hook enforcement, correct-course workflow, automated contract tests |
+| Document Coordination | FR19, FR20, FR21, FR22 | Transmission→document modification, coherence checking, traceability, drift detection |
+| Governance Enforcement | FR26, FR27, FR28, FR56 | Version drift detection, deprecation management, isolation enforcement, CI template propagation |
+| Monitoring Engine | FR29, FR31, FR32, FR33, FR58 | Dashboard engine, health check, notifications, morning digest, sprint tracking |
+
+**Plus the 7 gaps already identified at Step 7:** contract management workflows, git policy enforcement, stack governance, CI/CD template management, version compatibility matrix, git hooks→agent triggers, metrics export (JSON/YAML for Prometheus).
+
+**Plus FR60** (identified during review): System can export ecosystem metrics in Prometheus-scrapable format — this is the metrics export gap already listed.
+
+#### FRs Remaining in tuttle-master PRD (28 FRs)
+
+These FRs describe **Tuttle-specific configuration** and **ecosystem obligations** that master defines. They fall into two subcategories:
+
+**A. Tuttle Configuration (what master parameterizes):**
+
+| FR | Tuttle-Master Configuration |
+|----|----------------------------|
+| **FR1** | Define the Tuttle hierarchy: child projects, their DAG dependencies (infra → libs → store‖vpn → provisioner → apps), bmad-multi-project as ecosystem member |
+| **FR14** | Define which contracts exist between Tuttle projects: Store↔Provisioner (payment-webhook-spec, subscription-lifecycle), Provisioner↔VPN (vpn-user-api-spec, vpn-status-polling). Contract ownership rules |
+| **FR18** | Visualize the Tuttle network: inter-project contracts graph (Excalidraw), navigable at a glance |
+| **FR23** | Define Tuttle git policy: branching strategy, branch naming, protected branches, PR rules, release tagging (SemVer), submodule sync on release tag |
+| **FR24** | Define Tuttle secrets policy: Infisical namespaces per project, environment stratification, rotation schedules |
+| **FR25** | Define Tuttle technology registry: approved technologies with pinned versions, validation criteria, drift tolerance |
+| **FR30** | Configure Tuttle dashboard: green/orange/red thresholds, alert priorities, notification channels |
+| **FR46** | Write Tuttle Getting Started guide |
+| **FR47** | Write Tuttle operational runbook |
+| **FR48** | Maintain Tuttle unified glossary |
+| **FR49** | Define Tuttle roadmap phases |
+| **FR55** | Define Tuttle PR escalation rules per project/branch |
+| **FR57** | Maintain Tuttle dependency graph (Excalidraw) |
+| **FR59** | Create, sign, and publish Tuttle warrant canary |
+
+**B. Ecosystem Obligations (what master requires, implementation determined by architect + BMAD flow):**
+
+These FRs describe capabilities that the Tuttle ecosystem must have. Master documents the obligation; which child project implements it is an **architectural decision** that will emerge naturally through the BMAD workflow (architecture phase, transmissions, project creation).
+
+| FR | Ecosystem Obligation |
+|----|---------------------|
+| **FR4** | Recursive clone with fallback to backup remote |
+| **FR34** | Cryptographic identity provisioning (humans, agents, CI, bots, services) via unified PKI |
+| **FR35** | Mandatory signed commits on all projects |
+| **FR36** | Tier-based access enforcement (cert tier → capabilities) |
+| **FR37** | Immediate identity revocation (< 5 min propagation) |
+| **FR38** | Certificate auto-renewal without service interruption |
+| **FR39** | Release artifact signing (HSM-backed) |
+| **FR40** | Signed SBOM per release |
+| **FR41** | CI verifies signatures on input, signs artifacts on output |
+| **FR42** | Public verification of signature chain to root CA |
+| **FR43** | Documented recovery procedures for critical infrastructure |
+| **FR44** | Dual remotes (primary + backup) for every project |
+| **FR45** | Fail-closed behavior on all critical systems |
+| **FR54** | Independent per-project rollback without breaking interfaces |
+
+### Propagation Mechanism
+
+1. **tuttle-master PRD** (this document) documents Tuttle-specific configuration and ecosystem obligations
+2. Master generates `architectural` transmission to `bmad-multi-project` containing: the 30 module FRs + 7 gaps + Part B standards marked "enforced by module"
+3. Module PRD created via bmb workflow, integrating these as module FRs
+4. During **architecture phase**, the architect determines which child project(s) implement the ecosystem obligations (FR4, FR34-FR45, FR54). This may result in transmissions to existing or new projects
+5. The BMAD workflow naturally creates transmissions as obligations are assigned to projects
+6. Once module is ready, master configures using module capabilities (pure configuration, zero code)
+
+### Impact on NFRs
+
+**Part A (Master's Own NFRs):** No change — these are genuinely about master's coordination quality.
+
+**Part B (Standards Master Imposes):** The "Enforced by" column currently names specific projects (tuttle-infra, module, etc.). These attributions are **indicative, not prescriptive** — the architect will confirm or reassign during the architecture phase. Part B standards become NFRs in the target project PRDs when propagated via transmission.
+
+### Implementation Sequence (Updated)
+
+1. **Finish tuttle-master PRD** (current — Steps 8-10 done, polish pending)
+2. **Create bmad-multi-project module PRD** via bmb workflow — 30 FRs + 7 gaps + Part B module standards become module requirements
+3. **Architecture phase** — architect determines project structure, assigns ecosystem obligations to projects, creates transmissions
+4. **Child project PRDs** created via bmm workflow as architect assigns obligations
+5. **Develop/extend module** via bmb — implement generic multi-project capabilities
+6. **Configure tuttle-master** — pure configuration once module ready
 
